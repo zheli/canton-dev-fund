@@ -20,7 +20,15 @@ It is essentially a unified toolkit designed to simplify the development, testin
 
 ### 1. Objective
 
-This proposal solves the fragmented and manual setup experience for developers and especially the new developers using Canton LocalNet today. The current official LocalNet stack requires users to manage docker containers, keep track of configuration files, environment variables, setup observability and ad‑hoc tools and scripts for inspection and token operations themselves, creating friction for onboarding, workshops, hackathons or coding with AI coding agents. The intended outcome is a unified DevKit that lets any developer or AI agents control the full life cycle of one LocalNet or several LocalNets, with simple commands, monitor and explore activity, and experiment with CantonCoin and CIP‑56 tokens using maintained, open‑source tooling.
+The current official LocalNet stack creates significant friction for onboarding, workshops, hackathons, and AI-assisted coding because it requires users to manually manage:
+
+* Docker containers
+* Configuration files
+* Environment variables
+* Observability setup
+* Ad-hoc scripts and tools for inspection and token operations
+
+The goal is to deliver a unified DevKit. This open-source, maintained tooling will enable any developer or AI agent to manage the complete lifecycle of one or more LocalNets—using simple commands or a UI—monitor and explore activity, and easily experiment with CantonCoin and CIP-56 tokens.
 
 ### 2. Implementation Mechanics
 
