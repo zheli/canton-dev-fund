@@ -154,7 +154,7 @@ The Tech & Ops Committee will evaluate completion based on:
   * AI coding agent skills successfully managing LocalNet via `canton-devkit`.  
   * Token faucet, token wizard, and CIP-56 token flows (transfer, burn, balance) on LocalNet.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
-* Alignment with the stated value metrics: reduced onboarding time, standardized LocalNet tooling, and improved ability to experiment with tokens and observability.
+* Alignment with the stated value metrics: reduced onboarding time, streamlined LocalNet tooling, and improved ability to experiment with tokens and observability.
 
 ---
 
