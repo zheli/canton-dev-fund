@@ -46,26 +46,36 @@ Canton already ships several developer tools. The DevKit is designed to compleme
 
 #### Canton DevKit Features
 
-**1. LocalNet Stack Management**
+##### LocalNet Management
 
-The CN-Quickstart already provides `make start`, `make stop`, and `make clean-all`, but requires cloning a repo, installing Nix/Direnv, configuring `.env` files, and understanding Docker Compose profiles. DevKit collapses this into:
+The existing LocalNet setup requires manually downloading Splice bundles, exporting environment variables, composing multi-flag Docker commands, and understanding Docker Compose profiles. DevKit collapses this into:
 
-* `canton-dev localnet up` / `down` / `restart` / `clean` — a single installable CLI that downloads the correct Splice LocalNet bundle, generates configs, keys, and identities, starts the Docker stack, runs health checks, and prints ready-to-use endpoints (Ledger API, Admin API, JSON API, wallet UIs) and credentials.
-* `canton-dev localnet status` — show running containers, port mappings, health, and active profiles in a human-readable table (or JSON for scripting / AI agents).
-* `canton-dev localnet logs [service]` — stream or tail aggregated logs without requiring the user to know container names.
-* Optionally expose a **web UI / desktop UI API endpoint** for developers less comfortable with CLI tools, or for use in workshop/hackathon settings.
+###### CLI Commands
+* `canton-dev localnet up` / `down` / `restart` / `clean` / `status` / `logs` — a single installable CLI that downloads the latest Splice LocalNet bundle, generates configs, keys, and identities, starts the Docker stack, runs health checks, and prints ready-to-use endpoints (Ledger API, Admin API, JSON API, wallet UIs) and token credentials.
+* `canton-dev localnet [up|down|...etc] --version <version>` — will manage a specific version of the LocalNet bundle.
+* `canton-dev localnet [up|down|...etc] --name <localnet-name>` — will manage a named LocalNet instance. Which is useful for running multiple LocalNet instances in parallel.
+* `canton-dev localnet snapshot/restore [--name <localnet-name>]` — snapshot management of the LocalNet instance.
+* `canton-dev localnet logs [service]` — stream or tail aggregated logs of the specified service.
+* `canton-dev localnet restart [service]` — restart the specified service.
 
-**2. Observability Convenience Layer**
+###### Web UI Features
+All features covered by CLI commands but with a user-friendly interface.
 
-The Quickstart already ships a comprehensive Prometheus/Grafana/Loki/Tempo stack. DevKit does **not** rebuild these dashboards from scratch. Instead, it:
+###### AI Coding Agent Integration
+AI skill and command to work with the LocalNet using canton-devkit that supports Claude, Codex.
 
-* Ensures the observability profile is enabled by default when starting LocalNet (in Quickstart it is opt-in via `make setup`).
+
+##### 2. Observability Convenience Layer
+
+DevKit does **not** rebuild the observability stack from scratch. Instead, it bundles and configures a Prometheus/Grafana/Loki/Tempo stack tailored for LocalNet:
+
+* Ensures the observability profile is enabled by default when starting LocalNet.
 * Ships **Canton-specific Grafana dashboard presets** focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
 * Adds a `canton-dev metrics` subcommand that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
 * Introduces a **"cost projection" view** that estimates how a DApp's observed transaction patterns would translate to CantonCoin costs on Mainnet, helping developers understand running costs and project margins before deployment. This has no existing equivalent in current tooling.
 * Documents how teams can extend or customize dashboards for their own services.
 
-**3. Token Faucets & CIP-56 Token Tooling (LocalNet)**
+##### 3. Token Faucets & CIP-56 Token Tooling (LocalNet)
 
 This is the most differentiated feature. While LocalNet already provides wallet UIs and the Scan app exposes a Registry API for token transfers, there is currently no CLI-based faucet, no token creation wizard, and no ready-made Daml templates for common token operations. DevKit adds:
 
