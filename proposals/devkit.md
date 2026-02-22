@@ -10,9 +10,9 @@
 
 ## Abstract
 
-Canton DevKit – The vision of Canton DevKit is to become the default, one‑stop local developer environment for Canton that makes building on the network feel fast, discoverable, and approachable for any developer.
+**Canton DevKit** is the proposed **default, one-stop local developer environment** for the Canton network, making building on the network fast, discoverable, and approachable for any developer.
 
-Local Edition is a toolkit that turns Canton LocalNet into a one‑click developer environment. Over **9-12 months**, it will deliver one‑click LocalNet deployment, integrated monitoring dashboards, a LocalNet explorer UI, and CantonCoin/CIP‑56 token tooling, directly advancing the Development Fund’s focus on shared developer tools and critical infrastructure that benefit the whole ecosystem.
+It is essentially a unified toolkit designed to simplify the development, testing, and debugging of Canton Applications and DAML smart contracts. It is archived by providing developers with simple CLI commands and/or UI to interact with LocalNet, directly advancing the developer experience on the Canton ecosystem.
 
 ---
 
@@ -20,7 +20,7 @@ Local Edition is a toolkit that turns Canton LocalNet into a one‑click develop
 
 ### 1. Objective
 
-This proposal solves the fragmented and manual setup experience for developers using Canton LocalNet today. New users must currently manage Docker Compose, configuration files, environment variables, observability, and ad‑hoc tools for inspection and token operations, creating friction for onboarding, workshops, and hackathons. The intended outcome is a standardized DevKit that lets any developer spin up a complete LocalNet with one command, monitor and explore activity, and experiment with CantonCoin and CIP‑56 tokens using maintained, open‑source tooling.
+This proposal solves the fragmented and manual setup experience for developers and especially the new developers using Canton LocalNet today. The current official LocalNet stack requires users to manage docker containers, configuration files, environment variables, creating observability themselves, and setup ad‑hoc tools and scripts for inspection and token operations, creating friction for onboarding, workshops, and hackathons. The intended outcome is a unified DevKit that lets any developer spin up a complete LocalNet with one command, monitor and explore activity, and experiment with CantonCoin and CIP‑56 tokens using maintained, open‑source tooling.
 
 ### 2. Implementation Mechanics
 
