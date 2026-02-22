@@ -41,12 +41,10 @@ Canton already ships several developer tools. The DevKit is designed to compleme
 
 | Existing Tool | What It Does | DevKit Relationship |
 |---|---|---|
-| **DPM** (`dpm`) | SDK management, Daml build/test/codegen, lightweight single-process sandbox (`dpm sandbox`), Daml Shell | DevKit does **not** replicate DPM functionality. Developers continue to use `dpm` for Daml compilation, testing, and codegen. DevKit targets the higher-level **multi-node LocalNet** lifecycle that `dpm sandbox` does not cover. |
-| **CN-Quickstart** (`make start/stop/…`) | Full LocalNet + reference app via Make targets, modular Docker Compose, observability stack, Daml Shell, OAuth2 | DevKit wraps the same underlying Docker Compose stack but removes the requirement to clone a repo, install Nix/Direnv, and learn Make targets. Quickstart remains the reference for building a **full application**; DevKit is for spinning up **just the network** for contract development and experimentation. |
-| **Splice LocalNet** | Raw Docker Compose with 3 validators, PostgreSQL, wallet/SV/scan UIs, Canton Console | DevKit automates the manual `docker compose --env-file … -f … --profile … up -d` workflow into a single command and manages environment files, port discovery, and health checks automatically. |
-| **Observability stack** (Prometheus, Grafana, Loki, Tempo, OTEL, cAdvisor) | Already bundled as an optional Quickstart profile at `localhost:3030` | DevKit does **not** rebuild this stack. It reuses the existing Quickstart observability profile and adds a CLI convenience layer and Canton-specific dashboard presets on top. |
+| **DPM** (`dpm`) | SDK management, Daml build/test/codegen, lightweight single-process sandbox (`dpm sandbox`), Daml Shell | DevKit does **not** replicate DPM functionality. Developers continue to use `dpm` for Daml compilation, testing, and codegen. DevKit targets the higher-level **multi-node LocalNet** lifecycle instead of the single-node sandbox that `dpm sandbox` does not cover. |
+| **Existing LocalNet setup in Splice codebase** | Raw Docker Compose with 3 validators, PostgreSQL, wallet/SV/scan UIs, Canton Console | DevKit simplifies the process and abstracts the configuration and management of the container-based nodes. And it also provides additional features instead of just start, stop and cleanup operations. |
 
-#### DevKit Features
+#### Canton DevKit Features
 
 **1. LocalNet Stack Management**
 
