@@ -97,23 +97,23 @@ No backward compatibility impact.
 
 ## Milestones and Deliverables
 
-### Milestone 1: LocalNet Management — CLI & Web UI
+### Milestone 1: LocalNet Management — CLI
 
 - **Estimated Delivery:** Month 3  
-- **Focus:** One-click LocalNet lifecycle management via CLI and Web UI.  
+- **Focus:** One-click LocalNet lifecycle management via CLI.  
 - **Deliverables / Value Metrics:**  
   - `canton-devkit localnet up/down/restart/clean/status/logs` CLI commands with auto-generated configs, keys, identities, and printed endpoints and credentials.  
   - Version pinning (`--version`) and named instances (`--name`) for running multiple LocalNets in parallel.  
   - Snapshot and restore (`canton-devkit localnet snapshot/restore`) for saving and replaying LocalNet state.  
-  - Web UI covering all CLI features with a user-friendly interface.  
   - Installation and "Getting Started" guide for macOS and Linux.  
   - Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.
 
-### Milestone 2: Observability, Monitoring & AI Agent Integration
+### Milestone 2: Web UI, Observability, Monitoring & AI Agent Integration
 
 - **Estimated Delivery:** Month 6  
-- **Focus:** Integrated observability for LocalNet and AI coding agent support.  
+- **Focus:** Web UI for LocalNet management, integrated observability, and AI coding agent support.  
 - **Deliverables / Value Metrics:**  
+  - Web UI covering all CLI features from Milestone 1 with a user-friendly interface.  
   - Bundled Prometheus/Grafana/Loki/Tempo stack enabled by default when starting LocalNet.  
   - Canton-specific Grafana dashboard presets focused on DApp developers: transactions/sec, command completion latency, active contract counts, and per-template throughput.  
   - `canton-devkit metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
@@ -126,10 +126,9 @@ No backward compatibility impact.
 - **Estimated Delivery:** Month 9  
 - **Focus:** CantonCoin/CIP-56 tooling and UX polish.  
 - **Deliverables / Value Metrics:**  
-  - `canton-devkit faucet drip` CLI and Web UI faucets for CantonCoin and CIP-56 tokens on LocalNet.  
+  - `canton-devkit token mint` CLI and Web UI faucets for CantonCoin and CIP-56 tokens on LocalNet.  
   - `canton-devkit token create` interactive token wizard to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.  
   - `canton-devkit token transfer / burn / balance` convenience commands wrapping the Ledger API / Registry API.  
-  - Example Daml templates and scripts for issuance, transfer, burn, and escrow flows.  
   - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides.
 
 ### Milestone 4: Maintenance and Marketing
@@ -138,7 +137,7 @@ No backward compatibility impact.
 - **Focus:** Stability, compatibility maintenance, and ecosystem outreach.  
 - **Deliverables / Value Metrics:**  
   - Patch bugs and maintain compatibility with **newer Splice releases**.  
-  - Host 2 online/offline workshops about the DevKit.  
+  - Host 2 online/offline workshops about the Canton DevKit.  
   - Publish 1 case study or blog post.
 
 ---
@@ -167,8 +166,8 @@ Total: **1,665,900 CC** over **12 months**.
 
 ### Payment Breakdown by Milestone
 
-* Milestone 1 (LocalNet Management — CLI & Web UI): 555,300 CC upon committee acceptance.  
-* Milestone 2 (Observability, Monitoring & AI Agent Integration): 555,300 CC upon committee acceptance.  
+* Milestone 1 (LocalNet Management — CLI): 555,300 CC upon committee acceptance.  
+* Milestone 2 (Web UI, Observability, Monitoring & AI Agent Integration): 555,300 CC upon committee acceptance.  
 * Milestone 3 (Token Faucets & CIP-56 Token Tooling): 555,300 CC upon final release and acceptance.  
 * Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1–3 payments through month 12).
 
