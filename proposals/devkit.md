@@ -31,32 +31,54 @@ The current official LocalNet stack creates significant friction for onboarding,
 The goal is to deliver a unified DevKit. This open-source, maintained tooling will enable any developer or AI agent to manage the complete lifecycle of one or more LocalNets—using simple commands or a UI—monitor and explore activity, and easily experiment with CantonCoin and CIP-56 tokens.
 
 ### 2. Implementation Mechanics
+(Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
 
-The solution is delivered as a Canton DevKit – Local Edition toolkit, combining a CLI (and optionally simple GUI/TUI) with a packaged Docker stack based on the existing Canton Quickstart and LocalNet setup.
+The solution is delivered as an **open-source, standalone CLI application** (`canton-dev`) with optional web UI and hosted remote LocalNet services. It builds on top of the existing Splice LocalNet Docker Compose stack and the CN-Quickstart project, but packages the developer experience into a single installable binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup.
 
-Implementation is structured into four components:
+#### Relationship to Existing Tooling
 
-**1\. One‑Click LocalNet Deployment (CLI/GUI)**
+Canton already ships several developer tools. The DevKit is designed to complement—not replace—them:
 
-* Implement a `canton-dev localnet up/down/restart/clean` command wrapping the Quickstart Docker stack to start.  
-* Auto‑generate configurations, keys, identities, and emit ready‑to-use endpoints (Ledger API, admin API) and credentials at startup.  
-* Optionally ship **web UI/desktop UI API endpoint** for developers less comfortable with CLI tools.
+| Existing Tool | What It Does | DevKit Relationship |
+|---|---|---|
+| **DPM** (`dpm`) | SDK management, Daml build/test/codegen, lightweight single-process sandbox (`dpm sandbox`), Daml Shell | DevKit does **not** replicate DPM functionality. Developers continue to use `dpm` for Daml compilation, testing, and codegen. DevKit targets the higher-level **multi-node LocalNet** lifecycle that `dpm sandbox` does not cover. |
+| **CN-Quickstart** (`make start/stop/…`) | Full LocalNet + reference app via Make targets, modular Docker Compose, observability stack, Daml Shell, OAuth2 | DevKit wraps the same underlying Docker Compose stack but removes the requirement to clone a repo, install Nix/Direnv, and learn Make targets. Quickstart remains the reference for building a **full application**; DevKit is for spinning up **just the network** for contract development and experimentation. |
+| **Splice LocalNet** | Raw Docker Compose with 3 validators, PostgreSQL, wallet/SV/scan UIs, Canton Console | DevKit automates the manual `docker compose --env-file … -f … --profile … up -d` workflow into a single command and manages environment files, port discovery, and health checks automatically. |
+| **Observability stack** (Prometheus, Grafana, Loki, Tempo, OTEL, cAdvisor) | Already bundled as an optional Quickstart profile at `localhost:3030` | DevKit does **not** rebuild this stack. It reuses the existing Quickstart observability profile and adds a CLI convenience layer and Canton-specific dashboard presets on top. |
 
-**2\. Network Metrics & Bandwidth Monitor**
+#### DevKit Features
 
-* Package Prometheus/Grafana boilerplate dashboards as part of the LocalNet profile to show transactions/sec, latency, CPU/memory, and error rates.  
-* Add a `canton-dev metrics` subcommand that prints dashboard URLs and a concise “bandwidth profile” summary for the running DApp.  
-* Help new Canton developers **understand** how their code will affect the running cost on Mainnet and make it easier to project their margin.  
-* Document how teams can extend or customize dashboards for their own services.
+**1. LocalNet Stack Management**
 
-**3\. Token Faucets & CIP‑56 Token Tooling (LocalNet)**
+The CN-Quickstart already provides `make start`, `make stop`, and `make clean-all`, but requires cloning a repo, installing Nix/Direnv, configuring `.env` files, and understanding Docker Compose profiles. DevKit collapses this into:
 
-* Implement LocalNet faucets for CantonCoin and CIP‑56 tokens with both CLI and lightweight web UI.  
-* Provide a “token wizard” to define new **CIP‑56** tokens (name, symbol, decimals, initial supply) and mint to test wallets, plus example scripts and Daml templates for common token operations (issuance, transfer, burn).
+* `canton-dev localnet up` / `down` / `restart` / `clean` — a single installable CLI that downloads the correct Splice LocalNet bundle, generates configs, keys, and identities, starts the Docker stack, runs health checks, and prints ready-to-use endpoints (Ledger API, Admin API, JSON API, wallet UIs) and credentials.
+* `canton-dev localnet status` — show running containers, port mappings, health, and active profiles in a human-readable table (or JSON for scripting / AI agents).
+* `canton-dev localnet logs [service]` — stream or tail aggregated logs without requiring the user to know container names.
+* Optionally expose a **web UI / desktop UI API endpoint** for developers less comfortable with CLI tools, or for use in workshop/hackathon settings.
+
+**2. Observability Convenience Layer**
+
+The Quickstart already ships a comprehensive Prometheus/Grafana/Loki/Tempo stack. DevKit does **not** rebuild these dashboards from scratch. Instead, it:
+
+* Ensures the observability profile is enabled by default when starting LocalNet (in Quickstart it is opt-in via `make setup`).
+* Ships **Canton-specific Grafana dashboard presets** focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
+* Adds a `canton-dev metrics` subcommand that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
+* Introduces a **"cost projection" view** that estimates how a DApp's observed transaction patterns would translate to CantonCoin costs on Mainnet, helping developers understand running costs and project margins before deployment. This has no existing equivalent in current tooling.
+* Documents how teams can extend or customize dashboards for their own services.
+
+**3. Token Faucets & CIP-56 Token Tooling (LocalNet)**
+
+This is the most differentiated feature. While LocalNet already provides wallet UIs and the Scan app exposes a Registry API for token transfers, there is currently no CLI-based faucet, no token creation wizard, and no ready-made Daml templates for common token operations. DevKit adds:
+
+* `canton-dev faucet drip [--amount] [--to wallet]` — CLI faucet for CantonCoin and CIP-56 tokens on LocalNet, plus a lightweight web UI for the same.
+* `canton-dev token create` — interactive "token wizard" to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.
+* `canton-dev token transfer / burn / balance` — convenience commands wrapping the Ledger API / Registry API for common token operations.
+* Example Daml templates and scripts for issuance, transfer, burn, and escrow flows that developers can use as starting points for their own token applications.
 
 ### 3. Architectural Alignment
 
-The DevKit builds directly on the official Canton Quickstart and LocalNet architecture, wrapping the existing Dockerized services and profiles rather than introducing a parallel stack. It aligns with the Development Fund’s remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the emerging Canton token standard (CIP‑56) and related CIPs, making it easier for developers to test tokenized applications and integrations in a way that reflects mainnet patterns.
+The DevKit builds directly on the official Canton Quickstart and LocalNet architecture, wrapping the existing Dockerized services and profiles rather than introducing a parallel stack. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the emerging Canton token standard (CIP‑56) and related CIPs, making it easier for developers to test tokenized applications and integrations in a way that reflects mainnet patterns.
 
 ### 4. Backward Compatibility
 
@@ -72,40 +94,40 @@ No backward compatibility impact.
 
 ### Milestone 1: LocalNet CLI Foundation
 
-* Estimated Delivery: Month 3  
-* Focus: One‑click LocalNet lifecycle management.  
-* Deliverables / Value Metrics:  
-  * `canton-dev localnet up/down/restart/clean` wrapping the Quickstart Docker stack, with auto‑generated configs, keys, identities, and printed endpoints/credentials.  
-  * Installation and “Getting Started” guide for macOS and Linux.  
-  * Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.  
-  * **Optionally expose an API for ease of use, contingent on user payment for infrastructure costs.**
+- **Estimated Delivery:** Month 3  
+- **Focus:** One‑click LocalNet lifecycle management.  
+- **Deliverables / Value Metrics:**  
+  - `canton-dev localnet up/down/restart/clean` wrapping the Quickstart Docker stack, with auto‑generated configs, keys, identities, and printed endpoints/credentials.  
+  - Installation and "Getting Started" guide for macOS and Linux.  
+  - Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.  
+  - **Optionally expose an API for ease of use, contingent on user payment for infrastructure costs.**
 
 ### Milestone 2: Metrics and Monitoring
 
-* Estimated Delivery: Month 6  
-* Focus: Integrated observability for LocalNet.  
-* Deliverables / Value Metrics:  
-  * Prometheus/Grafana dashboards bundled as an optional or default DevKit profile showing throughput, latency, and resource usage for sample DApps.  
-  * `canton-dev metrics` subcommand exposing dashboard URLs and a concise text summary of key metrics.  
-  * Documentation on recommended usage and customization, plus example dashboards.
+- **Estimated Delivery:** Month 6  
+- **Focus:** Integrated observability for LocalNet.  
+- **Deliverables / Value Metrics:**  
+  - Prometheus/Grafana dashboards bundled as an optional or default DevKit profile showing throughput, latency, and resource usage for sample DApps.  
+  - `canton-dev metrics` subcommand exposing dashboard URLs and a concise text summary of key metrics.  
+  - Documentation on recommended usage and customization, plus example dashboards.
 
 ### Milestone 3: Token Faucets & Polish
 
-* Estimated Delivery: **Month 9**  
-* Focus: CantonCoin/CIP‑56 tooling and UX polish.  
-* Deliverables / Value Metrics:  
-  * LocalNet faucets for CantonCoin and CIP‑56 tokens exposed via CLI and web UI.  
-  * Token creation wizard for defining new CIP‑56 tokens and minting to local wallets, plus example token flows (e.g., payment, escrow).  
-  * Cross‑platform testing, UX polish across CLI and web components, and consolidated documentation, FAQs, and troubleshooting guides.
+- **Estimated Delivery:** Month 9  
+- **Focus:** CantonCoin/CIP‑56 tooling and UX polish.  
+- **Deliverables / Value Metrics:**  
+  - LocalNet faucets for CantonCoin and CIP‑56 tokens exposed via CLI and web UI.  
+  - Token creation wizard for defining new CIP‑56 tokens and minting to local wallets, plus example token flows (e.g., payment, escrow).  
+  - Cross‑platform testing, UX polish across CLI and web components, and consolidated documentation, FAQs, and troubleshooting guides.
 
-### Milestone 4: Maintenance and marketing
+### Milestone 4: Maintenance and Marketing
 
-* Estimated Delivery: Month 12  
-* Focus: Stability, compatibility maintenance, and ecosystem outreach.  
-* Deliverables / Value Metrics:  
-  * Patch bugs and make it compatible with **newer Splice releases**.  
-  * Host 2 online/offline workshop about the devkit.  
-  * Publish 1 case study or blog post.
+- **Estimated Delivery:** Month 12  
+- **Focus:** Stability, compatibility maintenance, and ecosystem outreach.  
+- **Deliverables / Value Metrics:**  
+  - Patch bugs and make it compatible with **newer Splice releases**.  
+  - Host 2 online/offline workshop about the devkit.  
+  - Publish 1 case study or blog post.
 
 ---
 
@@ -136,13 +158,13 @@ Total: **1,665,900 CC** over **12 months**.
 * Milestone 3 (Token Faucets & Polish): 555,300 CC upon final release and acceptance.  
 * Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1-3 payments through month 12).
 
-Funding is requested in Canton Coin, consistent with the Development Fund’s CC‑denominated, milestone‑based grants model under CIP‑100.
+Funding is requested in Canton Coin, consistent with the Development Fund's CC‑denominated, milestone‑based grants model under CIP‑100.
 
 ### Volatility Stipulation
 
 The proposed project duration is 9 months (core development, followed by 3 months of maintenance).
 
-* The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund’s governance guidelines.  
+* The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
 * If scope changes or delays requested by the Committee extend timelines beyond the original plan, remaining milestones and CC amounts can be renegotiated by mutual agreement.
 
 ---
@@ -159,9 +181,9 @@ Upon release of major components (e.g., first public DevKit release, explorer, t
 
 ## Motivation
 
-Canton’s Quickstart and LocalNet already provide a powerful local environment with a Super Validator and CantonCoin wallet, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
+Canton's Quickstart and LocalNet already provide a powerful local environment with a Super Validator and CantonCoin wallet, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
 
-By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single DevKit, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund’s aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
+By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single DevKit, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
 
 ---
 
