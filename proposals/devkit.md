@@ -33,7 +33,7 @@ The goal is to deliver a unified DevKit. This open-source, maintained tooling wi
 ### 2. Implementation Mechanics
 (Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
 
-The solution is delivered as an **open-source, standalone CLI application** (`canton-dev`) with optional web UI and hosted remote LocalNet services. It builds on top of the existing Splice LocalNet Docker Compose stack and the CN-Quickstart project, but packages the developer experience into a single installable binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup.
+The solution is delivered as an **open-source, standalone CLI application** (`canton-devkit`) with optional web UI and remote on-demand LocalNet services. It utilize docker containers and runs LocalNet using Splice node, but packages the developer experience into a single binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup. It will also include other optional helper services that developers can enable or disable as needed.
 
 #### Relationship to Existing Tooling
 
