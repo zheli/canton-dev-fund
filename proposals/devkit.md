@@ -1,10 +1,10 @@
 ## Development Fund Proposal
 
-**Author:**  
+**Author:**  Zhe Li <zhe@bitdynamics.me>, Srikanth Yeleswarapu <srikanth@bitdynamics.me>
 
-**Status:** Draft  
+**Status:** Submitted  
 
-**Created:** 2026-02-20
+**Created:** 2026-02-22
 
 ---
 
