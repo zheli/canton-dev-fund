@@ -90,9 +90,7 @@ The DevKit builds directly on the official Canton Quickstart and LocalNet archit
 
 ### 4. Backward Compatibility
 
-The DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, mainnet, or existing production deployments. It wraps and automates existing Quickstart/LocalNet components, so the impact on existing systems is limited to optional local tooling adoption.
-
-If required, developers can continue using the underlying Quickstart make targets and Docker stack without DevKit.
+The DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, mainnet, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
 
 No backward compatibility impact.
 
