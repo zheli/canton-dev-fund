@@ -33,7 +33,7 @@ The goal is to deliver a unified DevKit. This open-source, maintained tooling wi
 ### 2. Implementation Mechanics
 (Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
 
-The solution is delivered as an **open-source, standalone CLI application** (`canton-devkit`) with web UI and remote on-demand LocalNet services. It utilize docker containers and runs LocalNet using Splice node, but packages the developer experience into a single binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup. It will also include other optional helper services that developers can enable or disable as needed.
+The solution is delivered as an **open-source, standalone CLI application** (`canton-devkit`) with web UI. It utilize docker containers and runs LocalNet using Splice node, but packages the developer experience into a single binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup. It will also include other optional helper services that developers can enable or disable as needed.
 
 #### Relationship to Existing Tooling
 
@@ -74,13 +74,13 @@ DevKit does **not** rebuild the observability stack from scratch. Instead, it bu
 * Documents how teams can extend or customize dashboards for their own services.
 * (Optional) Introduces a **"cost projection" view** that estimates how a DApp's observed transaction patterns would translate to CantonCoin costs on Mainnet, helping developers understand running costs and project margins before deployment. This has no existing equivalent in current tooling.
 
-##### Token Faucets & CIP-56 Token Tooling (LocalNet)
+##### Local Token Faucets & CIP-56 Developer Toolkit
 
-This is the most differentiated feature. While LocalNet already provides wallet UIs and the Scan app exposes a Registry API for token transfers, there is currently no CLI-based faucet, no token creation wizard, and no ready-made Daml templates for common token operations. DevKit adds:
+This is the most differentiated feature. LocalNet already ships wallet UIs and a Registry API for token transfers, but developers still lack a CLI-driven faucet, a guided token-creation flow, and reusable Daml templates for everyday token operations. DevKit closes those gaps:
 
-* `canton-dev faucet drip [--amount] [--to wallet]` — CLI faucet for CantonCoin and CIP-56 tokens on LocalNet, plus a lightweight web UI for the same.
-* `canton-dev token create` — interactive "token wizard" to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.
-* `canton-dev token transfer / burn / balance` — convenience commands wrapping the Ledger API / Registry API for common token operations.
+* `canton-devkit token create` — interactive "token wizard" to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.
+* `canton-devkit token mint {token-name} [--amount] [--to wallet]` — CLI faucet for CantonCoin and CIP-56 tokens on LocalNet, plus a lightweight web UI for the same.
+* `canton-devkit token [transfer | burn | balance] {token-name} {amount} [--to wallet]` — convenience commands wrapping the Ledger API / Registry API for common token operations.
 * Example Daml templates and scripts for issuance, transfer, burn, and escrow flows that developers can use as starting points for their own token applications.
 
 ### 3. Architectural Alignment
@@ -147,7 +147,7 @@ No backward compatibility impact.
 
 The Tech & Ops Committee will evaluate completion based on:
 
-* Delivery of the DevKit components as specified for each milestone.  
+* Delivery of the Canton DevKit project as specified for each milestone.  
 * Demonstrated functionality via scripts, demos, and documentation showing:  
   * One-command LocalNet startup and teardown, including multi-instance and snapshot/restore workflows.  
   * Web UI covering the same LocalNet management features as the CLI.  
