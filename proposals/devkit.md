@@ -85,11 +85,11 @@ This is the most differentiated feature. LocalNet already ships wallet UIs and a
 
 ### 3. Architectural Alignment
 
-The DevKit builds directly on the official Canton Quickstart and LocalNet architecture, wrapping the existing Dockerized services and profiles rather than introducing a parallel stack. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the emerging Canton token standard (CIP‑56) and related CIPs, making it easier for developers to test tokenized applications and integrations in a way that reflects mainnet patterns.
+The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the emerging Canton token standard (CIP‑56) and related CIPs, making it easier for developers to test tokenized applications and integrations in a way that reflects mainnet patterns.
 
 ### 4. Backward Compatibility
 
-The DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, mainnet, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
+The Canton DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, mainnet, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
 
 No backward compatibility impact.
 
@@ -194,14 +194,14 @@ Upon release of major components (e.g., first public DevKit release, explorer, t
 
 ## Motivation
 
-Canton's Quickstart and LocalNet already provide a powerful local environment with a Super Validator and CantonCoin wallet, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
+The Splice source code for Canton already provides a LocalNet environment, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
 
-By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single DevKit, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
+By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single Canton DevKit CLI tool, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
 
 ---
 
 ## Rationale
 
-This approach reuses and wraps the existing Quickstart/LocalNet stack instead of reinventing it, minimizing risk and aligning DevKit with the canonical way to run Canton locally. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
+A painless local development experience is essential for ecosystem growth — every hour a developer spends fighting infrastructure is an hour not spent building applications. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
 
-Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token faucets—would increase maintenance burden and fragment the developer experience. A unified DevKit offers a single, opinionated path that can become the de facto standard for local development, while remaining open‑source and extensible so the community can adapt it to evolving needs and future CIPs.
+Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token faucets—would increase maintenance burden and fragment the developer experience. A unified Canton DevKit CLI tool offers a single, opinionated path that can become the de facto standard for local development, while remaining open‑source and extensible so the community can adapt it to evolving needs and future CIPs.
