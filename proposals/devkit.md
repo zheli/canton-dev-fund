@@ -96,43 +96,49 @@ No backward compatibility impact.
 ---
 
 ## Milestones and Deliverables
-TODO: Double check on the milestone scopes
 
-### Milestone 1: LocalNet CLI Foundation
+### Milestone 1: LocalNet Management — CLI & Web UI
 
 - **Estimated Delivery:** Month 3  
-- **Focus:** One‑click LocalNet lifecycle management.  
+- **Focus:** One-click LocalNet lifecycle management via CLI and Web UI.  
 - **Deliverables / Value Metrics:**  
-  - `canton-dev localnet up/down/restart/clean` wrapping the Quickstart Docker stack, with auto‑generated configs, keys, identities, and printed endpoints/credentials.  
+  - `canton-devkit localnet up/down/restart/clean/status/logs` CLI commands with auto-generated configs, keys, identities, and printed endpoints and credentials.  
+  - Version pinning (`--version`) and named instances (`--name`) for running multiple LocalNets in parallel.  
+  - Snapshot and restore (`canton-devkit localnet snapshot/restore`) for saving and replaying LocalNet state.  
+  - Web UI covering all CLI features with a user-friendly interface.  
   - Installation and "Getting Started" guide for macOS and Linux.  
-  - Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.  
-  - **Optionally expose an API for ease of use, contingent on user payment for infrastructure costs.**
+  - Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.
 
-### Milestone 2: Metrics and Monitoring
+### Milestone 2: Observability, Monitoring & AI Agent Integration
 
 - **Estimated Delivery:** Month 6  
-- **Focus:** Integrated observability for LocalNet.  
+- **Focus:** Integrated observability for LocalNet and AI coding agent support.  
 - **Deliverables / Value Metrics:**  
-  - Prometheus/Grafana dashboards bundled as an optional or default DevKit profile showing throughput, latency, and resource usage for sample DApps.  
-  - `canton-dev metrics` subcommand exposing dashboard URLs and a concise text summary of key metrics.  
-  - Documentation on recommended usage and customization, plus example dashboards.
+  - Bundled Prometheus/Grafana/Loki/Tempo stack enabled by default when starting LocalNet.  
+  - Canton-specific Grafana dashboard presets focused on DApp developers: transactions/sec, command completion latency, active contract counts, and per-template throughput.  
+  - `canton-devkit metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
+  - AI coding agent skills and commands for Claude and Codex to interact with LocalNet via `canton-devkit`.  
+  - Documentation on recommended usage, dashboard customization, and AI agent integration.  
+  - (Optional) Cost projection view estimating how observed transaction patterns translate to CantonCoin costs on Mainnet.
 
-### Milestone 3: Token Faucets & Polish
+### Milestone 3: Token Faucets & CIP-56 Token Tooling
 
 - **Estimated Delivery:** Month 9  
-- **Focus:** CantonCoin/CIP‑56 tooling and UX polish.  
+- **Focus:** CantonCoin/CIP-56 tooling and UX polish.  
 - **Deliverables / Value Metrics:**  
-  - LocalNet faucets for CantonCoin and CIP‑56 tokens exposed via CLI and web UI.  
-  - Token creation wizard for defining new CIP‑56 tokens and minting to local wallets, plus example token flows (e.g., payment, escrow).  
-  - Cross‑platform testing, UX polish across CLI and web components, and consolidated documentation, FAQs, and troubleshooting guides.
+  - `canton-devkit faucet drip` CLI and Web UI faucets for CantonCoin and CIP-56 tokens on LocalNet.  
+  - `canton-devkit token create` interactive token wizard to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.  
+  - `canton-devkit token transfer / burn / balance` convenience commands wrapping the Ledger API / Registry API.  
+  - Example Daml templates and scripts for issuance, transfer, burn, and escrow flows.  
+  - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides.
 
 ### Milestone 4: Maintenance and Marketing
 
 - **Estimated Delivery:** Month 12  
 - **Focus:** Stability, compatibility maintenance, and ecosystem outreach.  
 - **Deliverables / Value Metrics:**  
-  - Patch bugs and make it compatible with **newer Splice releases**.  
-  - Host 2 online/offline workshop about the devkit.  
+  - Patch bugs and maintain compatibility with **newer Splice releases**.  
+  - Host 2 online/offline workshops about the DevKit.  
   - Publish 1 case study or blog post.
 
 ---
@@ -141,11 +147,13 @@ TODO: Double check on the milestone scopes
 
 The Tech & Ops Committee will evaluate completion based on:
 
-* Delivery of the DevKit components as specified for each milestone  
+* Delivery of the DevKit components as specified for each milestone.  
 * Demonstrated functionality via scripts, demos, and documentation showing:  
-  * One‑command LocalNet startup and teardown.  
-  * Working dashboards for throughput, latency, and resource usage on a sample DApp.  
-  * Token faucet and CIP‑56 token flows on LocalNet, visible in the explorer and dashboards.  
+  * One-command LocalNet startup and teardown, including multi-instance and snapshot/restore workflows.  
+  * Web UI covering the same LocalNet management features as the CLI.  
+  * Working Grafana dashboards for throughput, latency, and resource usage on a sample DApp.  
+  * AI coding agent skills successfully managing LocalNet via `canton-devkit`.  
+  * Token faucet, token wizard, and CIP-56 token flows (transfer, burn, balance) on LocalNet.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
 * Alignment with the stated value metrics: reduced onboarding time, standardized LocalNet tooling, and improved ability to experiment with tokens and observability.
 
@@ -159,10 +167,10 @@ Total: **1,665,900 CC** over **12 months**.
 
 ### Payment Breakdown by Milestone
 
-* Milestone 1 (LocalNet CLI Foundation): 555,300 CC upon committee acceptance.  
-* Milestone 2 (Metrics and Monitoring): 555,300 CC upon committee acceptance.  
-* Milestone 3 (Token Faucets & Polish): 555,300 CC upon final release and acceptance.  
-* Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1-3 payments through month 12).
+* Milestone 1 (LocalNet Management — CLI & Web UI): 555,300 CC upon committee acceptance.  
+* Milestone 2 (Observability, Monitoring & AI Agent Integration): 555,300 CC upon committee acceptance.  
+* Milestone 3 (Token Faucets & CIP-56 Token Tooling): 555,300 CC upon final release and acceptance.  
+* Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1–3 payments through month 12).
 
 Funding is requested in Canton Coin, consistent with the Development Fund's CC‑denominated, milestone‑based grants model under CIP‑100.
 
