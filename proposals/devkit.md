@@ -202,6 +202,6 @@ By consolidating one‑click LocalNet lifecycle management, observability and to
 
 ## Rationale
 
-A painless local development experience is essential for ecosystem growth — every hour a developer spends fighting infrastructure is an hour not spent building applications. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
+Reducing the operational overhead of local development is a prerequisite for sustainable ecosystem growth; developer time reclaimed from infrastructure management translates directly into faster application delivery and broader adoption. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
 
 Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token faucets—would increase maintenance burden and fragment the developer experience. A unified Canton DevKit CLI tool offers a single, opinionated path that can become the de facto standard for local development, while remaining open‑source and extensible so the community can adapt it to evolving needs and future CIPs.
