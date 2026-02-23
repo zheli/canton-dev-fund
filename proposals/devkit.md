@@ -72,7 +72,7 @@ DevKit does **not** rebuild the observability stack from scratch. Instead, it bu
 * Ships **Canton-specific Grafana dashboard presets** focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
 * Adds a `canton-devkit metrics` subcommand that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
 * Documents how teams can extend or customize dashboards for their own services.
-* (Optional) Introduces a **"cost projection" view** that estimates how a DApp's observed transaction patterns would translate to CantonCoin costs on Mainnet, helping developers understand running costs and project margins before deployment. This has no existing equivalent in current tooling.
+* Introduces an experimental **"cost projection" view** that estimates how an application's observed transaction patterns would translate to traffic costs on Mainnet, helping developers understand running costs and project margins before deployment.
 
 ##### Local Token Faucets & CIP-56 Developer Toolkit
 
@@ -119,7 +119,7 @@ No backward compatibility impact.
   - `canton-devkit metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
   - AI coding agent skills and commands for Claude and Codex to interact with LocalNet via `canton-devkit`.  
   - Documentation on recommended usage, dashboard customization, and AI agent integration.  
-  - (Experimental) Cost projection view estimating how observed transaction patterns translate to CantonCoin costs on Mainnet.
+  - (Experimental) Cost projection view estimating how observed transaction patterns translate to traffic costs on Mainnet.
 
 ### Milestone 3: Token Faucets & CIP-56 Token Tooling
 
