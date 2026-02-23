@@ -89,7 +89,7 @@ The Canton DevKit removes the friction of managing local test environments so de
 
 ### 4. Backward Compatibility
 
-The Canton DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, mainnet, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
+The Canton DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, DAML semantics, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
 
 No backward compatibility impact.
 
