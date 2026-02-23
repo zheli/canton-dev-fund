@@ -79,13 +79,12 @@ DevKit does **not** rebuild the observability stack from scratch. Instead, it bu
 This is the most differentiated feature. LocalNet already ships wallet UIs and a Registry API for token transfers, but developers still lack a CLI-driven faucet, a guided token-creation flow, and reusable Daml templates for everyday token operations. DevKit closes those gaps:
 
 * `canton-devkit token create` — interactive "token wizard" to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.
-* `canton-devkit token mint {token-name} [--amount] [--to wallet]` — CLI faucet for CantonCoin and CIP-56 tokens on LocalNet, plus a lightweight web UI for the same.
-* `canton-devkit token [transfer | burn | balance] {token-name} {amount} [--to wallet]` — convenience commands wrapping the Ledger API / Registry API for common token operations.
+* `canton-devkit token [mint | transfer | burn | balance] {token-name} {amount} [--to wallet]` — convenience commands wrapping the Ledger API / Registry API for common token operations.
 * Example Daml templates and scripts for issuance, transfer, burn, and escrow flows that developers can use as starting points for their own token applications.
 
 ### 3. Architectural Alignment
 
-The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the emerging Canton token standard (CIP‑56) and related CIPs, making it easier for developers to test tokenized applications and integrations in a way that reflects mainnet patterns.
+The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the Canton token standard CIP‑56, making it easier for developers to test tokenized applications and integrations in a way that reflects Mainnet patterns.
 
 ### 4. Backward Compatibility
 
@@ -126,8 +125,8 @@ No backward compatibility impact.
 - **Estimated Delivery:** Month 9  
 - **Focus:** CantonCoin/CIP-56 tooling and UX polish.  
 - **Deliverables / Value Metrics:**  
-  - `canton-devkit token mint` CLI and Web UI faucets for CantonCoin and CIP-56 tokens on LocalNet.  
-  - `canton-devkit token create` interactive token wizard to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.  
+  - `canton-devkit token mint` CLI and Web UI minting for CIP-56 tokens on LocalNet.  
+  - `canton-devkit token create` interactive token wizard to define new CIP-56 tokens (name, symbol, decimals, initial supply).  
   - `canton-devkit token transfer / burn / balance` convenience commands wrapping the Ledger API / Registry API.  
   - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides.
 
@@ -152,7 +151,7 @@ The Tech & Ops Committee will evaluate completion based on:
   * Web UI covering the same LocalNet management features as the CLI.  
   * Working Grafana dashboards for throughput, latency, and resource usage on a sample DApp.  
   * AI coding agent skills successfully managing LocalNet via `canton-devkit`.  
-  * Token faucet, token wizard, and CIP-56 token flows (transfer, burn, balance) on LocalNet.  
+  * CIP-56 token creation wizard, and CIP-56 token flows (mint, transfer, burn, balance) on LocalNet.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
 * Alignment with the stated value metrics: reduced onboarding time, streamlined LocalNet tooling, and improved ability to experiment with tokens and observability.
 
