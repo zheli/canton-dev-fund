@@ -10,9 +10,9 @@
 
 ## Abstract
 
-**Canton DevKit** is the proposed **default, one-stop local developer environment** for the Canton network, making building on the network fast, discoverable, and approachable for any developer.
+**Canton DevKit** is the proposed **one-stop local developer LocalNet toolkit** for the Canton network, making building on the network fast, discoverable, and approachable for any developer.
 
-It is essentially a unified toolkit designed to simplify the development, testing, and debugging of Canton Applications and DAML smart contracts. It is archived by providing developers with simple CLI commands and/or UI to interact with LocalNet, directly advancing the developer experience on the Canton ecosystem.
+It is essentially a unified toolkit designed to simplify the development, testing, and debugging of Canton Applications and DAML smart contracts with LocalNet. It is archived by providing developers with simple CLI commands and/or UI to interact with LocalNet, directly advancing the developer experience on the Canton ecosystem. It also provides additional features to help developers experiment with CIP-56 tokens.
 
 ---
 
@@ -179,6 +179,7 @@ The proposed project duration is 9 months (core development, followed by 3 month
 
 * The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
 * If scope changes or delays requested by the Committee extend timelines beyond the original plan, remaining milestones and CC amounts can be renegotiated by mutual agreement.
+* The token tooling will only support CIP-56 token standard, any other token standards released during the project will require re-negotiation of the milestone scope and funding.
 
 ---
 
