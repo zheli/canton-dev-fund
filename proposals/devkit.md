@@ -10,9 +10,9 @@
 
 ## Abstract
 
-**Canton DevKit** is the proposed **one-stop local developer LocalNet toolkit** for the Canton network, making building on the network fast, discoverable, and approachable for any developer.
+**Canton DevKit** is a proposed **one-stop LocalNet toolkit** for the Canton network that makes local development faster, more discoverable, and more approachable for new and experienced developers alike.
 
-It is essentially a unified toolkit designed to simplify the development, testing, and debugging of Canton Applications and DAML smart contracts with LocalNet. It is archived by providing developers with simple CLI commands and/or UI to interact with LocalNet, directly advancing the developer experience on the Canton ecosystem. It also provides additional features to help developers experiment with CIP-56 tokens.
+The proposal is grounded in the 2026 Canton developer experience survey: 41% of respondents identified environment setup and node operations as the hardest part of getting started, observability was ranked the highest-priority tooling improvement area, and most respondents were new to Canton but already familiar with mature Ethereum-style developer workflows. DevKit addresses that gap with a unified CLI and web UI for LocalNet lifecycle management, monitoring, debugging-oriented workflows, and CIP-56 token experimentation so developers can focus on building applications instead of managing infrastructure.
 
 ---
 
@@ -28,12 +28,19 @@ The current official LocalNet stack creates significant friction for onboarding,
 * Observability setup
 * Ad-hoc scripts and tools for inspection and token operations
 
-The goal is to deliver a unified DevKit. This maintained tooling will enable any developer or AI agent to manage the complete lifecycle of one or more LocalNets—using simple commands or a UI—monitor and explore activity, and easily experiment with CantonCoin and CIP-56 tokens.
+This proposal directly responds to the pain points surfaced in the 2026 developer survey:
+
+* **41% of developers** said environment setup and node operations were the hardest part of starting development.
+* Developers explicitly asked for a unified development framework comparable to **Hardhat, Foundry, or Anchor**.
+* **Observability** was ranked as the most important tooling improvement area.
+* Developers also highlighted weak debugging and transaction analysis workflows, with several referencing a **Tenderly-like** experience as the ideal benchmark.
+
+The goal is to deliver a unified DevKit that reduces infrastructure complexity and standardizes the local development workflow. This maintained tooling will enable any developer or AI agent to manage the complete lifecycle of one or more LocalNets through simple commands or a UI, monitor and explore activity, and experiment with CantonCoin and CIP-56 tokens without assembling a custom toolchain first.
 
 ### 2. Implementation Mechanics
 (Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
 
-The solution is delivered as a **standalone CLI application** (`canton-devkit`) with web UI. It utilize docker containers and runs LocalNet using Splice node, but packages the developer experience into a single binary that requires no git clone, no Makefile knowledge, and no manual environment variable setup. It will also include other optional helper services that developers can enable or disable as needed.
+The solution is delivered as a **standalone CLI application** (`canton-devkit`) with a web UI. It uses Docker containers and runs LocalNet using Splice nodes, but packages the developer experience into a single installable tool that requires no git clone, no Makefile knowledge, and no manual environment variable setup. Optional helper services can be enabled or disabled as needed.
 
 #### Relationship to Existing Tooling
 
@@ -48,7 +55,7 @@ Canton already ships several developer tools. The DevKit is designed to compleme
 
 ##### LocalNet Management
 
-The existing LocalNet setup requires manually downloading Splice bundles, exporting environment variables, composing multi-flag Docker commands, and understanding Docker Compose profiles. DevKit collapses this into:
+The existing LocalNet setup requires manually downloading Splice bundles, exporting environment variables, composing multi-flag Docker commands, and understanding Docker Compose profiles. Survey feedback shows that this setup burden is the single largest onboarding blocker. DevKit collapses this into a workflow that feels closer to modern Web3 developer tooling:
 
 ###### CLI Commands
 * `canton-devkit localnet up` / `down` / `restart` / `clean` / `status` / `logs` — a single installable CLI that downloads the latest Splice LocalNet bundle, generates configs, keys, and identities, starts the Docker stack, runs health checks, and prints ready-to-use endpoints (Ledger API, Admin API, JSON API, wallet UIs) and token credentials.
@@ -66,13 +73,23 @@ AI skill and command to work with the LocalNet using canton-devkit that supports
 
 ##### Observability and Monitoring
 
-DevKit does **not** rebuild the observability stack from scratch. Instead, it bundles and configures a Prometheus/Grafana/Loki/Tempo stack tailored for LocalNet:
+Observability was ranked as the highest-priority tooling improvement area in the survey. DevKit does **not** rebuild the observability stack from scratch. Instead, it bundles and configures a Prometheus/Grafana/Loki/Tempo stack tailored for LocalNet:
 
 * Ensures the observability profile is enabled by default when starting LocalNet.
 * Ships **Canton-specific Grafana dashboard presets** focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
 * Adds a `canton-devkit metrics` subcommand that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
+* Adds health checks and service status views so developers can quickly identify connectivity issues across validators, sequencers, mediators, and supporting services.
 * Documents how teams can extend or customize dashboards for their own services.
 * Introduces an experimental **"cost projection" view** that estimates how an application's observed transaction patterns would translate to traffic costs on Mainnet, helping developers understand running costs and project margins before deployment.
+
+##### Debugging and Transaction Inspection
+
+Developers reported that current debugging relies too heavily on logs and manual inspection. To improve that experience, DevKit will provide a first layer of debugging-oriented workflows around LocalNet:
+
+* Service-aware log aggregation and filtering via `canton-devkit localnet logs [service]`.
+* Status and health reporting that helps pinpoint failures in node startup, connectivity, and transaction submission flows.
+* Metrics and dashboard views that make transaction lifecycle and performance issues visible without requiring developers to assemble bespoke monitoring stacks.
+* A foundation for future simulation and trace-style capabilities as the surrounding Canton tooling surface evolves.
 
 ##### Local Token Faucets & CIP-56 Developer Toolkit
 
@@ -84,7 +101,7 @@ This is the most differentiated feature. LocalNet already ships wallet UIs and a
 
 ### 3. Architectural Alignment
 
-The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the Canton token standard CIP‑56, making it easier for developers to test tokenized applications and integrations in a way that reflects Mainnet patterns.
+The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. This directly addresses the survey's core insight: the primary barrier to building on Canton is not protocol capability, but developer tooling maturity. The proposal aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone-based, CC-denominated funding and governance model formalized under CIP-100. Token tooling is designed to follow the Canton token standard CIP-56, making it easier for developers to test tokenized applications and integrations in a way that reflects Mainnet patterns.
 
 ### 4. Backward Compatibility
 
@@ -106,6 +123,7 @@ No backward compatibility impact.
   - Snapshot and restore (`canton-devkit localnet snapshot/restore`) for saving and replaying LocalNet state.  
   - Installation and "Getting Started" guide for macOS and Linux.  
   - Internal testing plus at least one external tester validating that a new developer can go from zero to running LocalNet in under 10 minutes.
+  - Measurable reduction in manual setup steps compared with the existing Splice LocalNet workflow.
 
 ### Milestone 2: Web UI, Observability, Monitoring & AI Agent Integration
 
@@ -116,9 +134,11 @@ No backward compatibility impact.
   - Bundled Prometheus/Grafana/Loki/Tempo stack enabled by default when starting LocalNet.  
   - Canton-specific Grafana dashboard presets focused on DApp developers: transactions/sec, command completion latency, active contract counts, and per-template throughput.  
   - `canton-devkit metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
+  - Health checks and service status views covering validator, sequencer, mediator, and supporting services.  
   - AI coding agent skills and commands for Claude and Codex to interact with LocalNet via `canton-devkit`.  
   - Documentation on recommended usage, dashboard customization, and AI agent integration.  
   - (Experimental) Cost projection view estimating how observed transaction patterns translate to traffic costs on Mainnet.
+  - Demonstrated improvement in issue diagnosis speed for common LocalNet failures versus log-only workflows.
 
 ### Milestone 3: Token Faucets & CIP-56 Token Tooling
 
@@ -150,10 +170,11 @@ The Tech & Ops Committee will evaluate completion based on:
   * One-command LocalNet startup and teardown, including multi-instance and snapshot/restore workflows.  
   * Web UI covering the same LocalNet management features as the CLI.  
   * Working Grafana dashboards for throughput, latency, and resource usage on a sample DApp.  
+  * Health and status visibility across validators, sequencers, mediators, and supporting services.  
   * AI coding agent skills successfully managing LocalNet via `canton-devkit`.  
   * CIP-56 token creation wizard, and CIP-56 token flows (mint, transfer, burn, balance) on LocalNet.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
-* Alignment with the stated value metrics: reduced onboarding time, streamlined LocalNet tooling, and improved ability to experiment with tokens and observability.
+* Alignment with the stated value metrics: reduced onboarding time, streamlined LocalNet tooling, better visibility into transaction and infrastructure health, and improved ability to experiment with tokens and observability.
 
 ---
 
@@ -194,14 +215,16 @@ Upon release of major components (e.g., first public DevKit release, explorer, t
 
 ## Motivation
 
-The Splice source code for Canton already provides a LocalNet environment, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
+The 2026 Canton developer experience survey makes the case for this proposal clear. Most respondents joined the ecosystem within the last 12 months, most come with prior Ethereum experience, and a large majority are building TradFi or hybrid TradFi/crypto applications. In other words, many incoming developers already expect the kind of streamlined tooling experience common in mature Web3 ecosystems.
 
-By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single CLI tool suite, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
+The Splice source code for Canton already provides a LocalNet environment, but developers must manually manage Docker, configs, and observability and often build ad-hoc tools for exploring transactions, contract state, and token operations. Survey respondents identified setup and infrastructure complexity as the hardest part of getting started, and they ranked observability as the top tooling improvement area. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
+
+By consolidating one-click LocalNet lifecycle management, observability, and token tooling into a single tool suite, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long-term value across the ecosystem.
 
 ---
 
 ## Rationale
 
-Reducing the operational overhead of local development is a prerequisite for sustainable ecosystem growth; developer time reclaimed from infrastructure management translates directly into faster application delivery and broader adoption. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
+Reducing the operational overhead of local development is a prerequisite for sustainable ecosystem growth; developer time reclaimed from infrastructure management translates directly into faster application delivery and broader adoption. The survey's central finding is that tooling maturity, not protocol capability, is the primary blocker. Delivering functionality in incremental, self-contained milestones enables early value (one-click LocalNet) and iterative refinement (metrics, debugging workflows, tokens) with clear checkpoints for the Committee.
 
-Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token tooling—would increase maintenance burden and fragment the developer experience. A unified Canton DevKit CLI tool suite offers a single, opinionated path that can offer an alternative to the existing tooling for local development, while remaining extensible so the community can adapt it to evolving needs and future CIPs.
+Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token tooling—would increase maintenance burden and fragment the developer experience. A unified Canton DevKit tool suite offers a single, opinionated path that can serve as the Canton equivalent of the modern local-development frameworks developers already expect, while remaining extensible so the community can adapt it to evolving needs and future CIPs.
