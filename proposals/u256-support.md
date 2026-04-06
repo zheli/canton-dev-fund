@@ -151,28 +151,7 @@ This proposal does **not** include:
 - Canton node changes,
 - an entire DeFi protocol suite.
 
-### 3. When To Use This
-
-This library is intended for the part of Canton development that genuinely needs exact large-integer and fixed-point arithmetic.
-
-Use `daml-u256` when:
-
-- building CLMM or advanced AMM math,
-- implementing overflow-safe multiplication-before-division workflows such as `mulDiv`,
-- representing fee-growth or accumulator values that rely on fixed-point formats such as Q64.96 or Q128.128,
-- porting or reproducing DeFi math that depends on explicit integer rounding and overflow behavior,
-- building protocol logic where exact arithmetic is part of the security model.
-
-Do **not** use `daml-u256` when:
-
-- your values fit comfortably within Daml `Int` or `Numeric`,
-- approximate or bounded decimal arithmetic is sufficient,
-- the relevant calculations are better handled off-ledger and only the final result needs to be recorded on-ledger,
-- the protocol does not depend on fixed-width integer semantics.
-
-This section is important because the proposal is not claiming that every financial application on Canton needs `U256`. It is claiming that a specific, important class of DeFi protocols becomes much more practical and auditable once a shared `U256` library exists.
-
-### 4. Architectural Alignment
+### 3. Architectural Alignment
 
 This proposal aligns with the fund as shared developer infrastructure:
 
@@ -187,25 +166,11 @@ It also aligns well with Canton specifically because it keeps the solution addit
 - no validator or node-operator reconfiguration,
 - no dependency on the timing of native language support.
 
-### 5. Backward Compatibility
+### 4. Backward Compatibility
 
 No backward compatibility impact.
 
 This is an additive library. Teams can adopt it incrementally or ignore it entirely.
-
-### 6. Daml SDK Compatibility Target
-
-The implementation is intended to target the actively supported Daml SDK releases available at project start, with compatibility notes published alongside releases.
-
-Because `daml-u256` is pure Daml and depends only on core surface-language features such as `Int`, `Numeric`, records, variants, and pure functions, it does not require custom Daml-LF extensions, runtime changes, or Canton node changes.
-
-### 7. Maintenance and Evolution
-
-After release, the library will be maintained in the open through normal repository-based contribution workflows, issue tracking, and versioned releases.
-
-The project will aim to remain compatible with actively supported Daml SDK versions where practical, with compatibility notes published alongside releases.
-
-If future Daml releases introduce native `U256` support, the library will publish migration guidance and adopt a documented deprecation path rather than remaining a permanent competing abstraction.
 
 ---
 
