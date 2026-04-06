@@ -1,23 +1,19 @@
-## Development Fund Proposal: daml-u256 -- Audited U256 and Fixed-Point Math Library for DeFi on Canton
+## Development Fund Proposal: daml-u256, Audited U256 and Fixed-Point Math Library for DeFi on Canton
 
-**Author:** Zhe Li, Srikanth
-**Status:** Submitted
-**Created:** 2026-03-29
+**Author:** Zhe Li, Srikanth  
+**Status:** Submitted  
+**Created:** 2026-03-29  
 **Implementing Entity:** Bit Dynamics
 
 ---
 
-## Background
-
-The digital asset ecosystem is undergoing a fundamental architectural shift — from isolated public smart contract platforms toward interconnected, privacy-preserving institutional networks. As capital markets accelerate tokenization of real-world assets, sovereign debt, and financial derivatives, enterprise-grade privacy, composability, and atomic settlement have become essential requirements.
-
-The Canton Network, powered by Daml, is engineered precisely for this. Unlike Ethereum's global public account model, Daml operates on an extended UTXO model where every asset is an independent immutable active contract. Its **privacy-by-default** architecture distributes contract state only to explicitly authorized signatories and observers — solving the competitive and compliance risks that prevent traditional financial institutions from using public blockchains.
-
-However, as institutional networks seek deeper interoperability with public EVM infrastructure, a specific gap has emerged: Daml has no native 256-bit integer type, while EVM-native DeFi protocols depend on `uint256` and `int256` pervasively — for AMM pool math, oracle price payloads, bridge state, and cryptographic operations. This proposal addresses that gap directly with a pure-Daml, audited library solution that requires no protocol or runtime changes.
-
----
-
 ## Abstract
+
+### Background
+
+As institutional networks seek deeper interoperability with public EVM infrastructure, a specific gap has emerged: Daml has no native 256-bit integer type, while EVM-native DeFi protocols depend on `uint256` and `int256` pervasively — for AMM pool math, oracle price payloads, bridge state, and cryptographic operations. This proposal addresses that gap directly with a pure-Daml, audited library solution that requires no protocol or runtime changes.
+
+### Proposal Summary
 
 Daml does not currently offer a native, stateful `U256` type for application code. That does not make all DeFi impossible on Canton, but it does make a very important class of DeFi protocols impractical to implement safely on-ledger: concentrated liquidity market makers, exact AMM math, precise lending curves, fee-growth accounting, and other designs that depend on 256-bit integer arithmetic, 512-bit intermediate multiplication, and fixed-point formats such as Q64.96 and Q128.128.
 
