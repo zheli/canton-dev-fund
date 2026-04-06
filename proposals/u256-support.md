@@ -1,6 +1,6 @@
 ## Development Fund Proposal: daml-u256, Audited U256 and Fixed-Point Math Library for DeFi on Canton
 
-**Author:** Zhe Li, Srikanth  
+**Author:** Zhe Li, Srikanth
 **Status:** Submitted  
 **Created:** 2026-03-29  
 **Implementing Entity:** Bit Dynamics
@@ -9,11 +9,7 @@
 
 ## Abstract
 
-### Background
-
-As institutional networks seek deeper interoperability with public EVM infrastructure, a specific gap has emerged: Daml has no native 256-bit integer type, while EVM-native DeFi protocols depend on `uint256` and `int256` pervasively — for AMM pool math, oracle price payloads, bridge state, and cryptographic operations. This proposal addresses that gap directly with a pure-Daml, audited library solution that requires no protocol or runtime changes.
-
-### Proposal Summary
+As institutional networks seek deeper interoperability with public EVM infrastructure, a critical gap has become clear: Daml has no native 256-bit integer type, while EVM-native DeFi protocols rely pervasively on `uint256` and `int256` for AMM pool math, oracle price payloads, bridge state, and cryptographic operations.
 
 Daml does not currently offer a native, stateful `U256` type for application code. That does not make all DeFi impossible on Canton, but it does make a very important class of DeFi protocols impractical to implement safely on-ledger: concentrated liquidity market makers, exact AMM math, precise lending curves, fee-growth accounting, and other designs that depend on 256-bit integer arithmetic, 512-bit intermediate multiplication, and fixed-point formats such as Q64.96 and Q128.128.
 
@@ -38,47 +34,20 @@ The goal is not to replace a future native numeric primitive. The goal is to giv
 
 ---
 
-## Delivery Ownership
-
-This proposal is intended to be delivered by `[Implementing Entity]` as an open-source public-good library for the wider Canton ecosystem.
-
-The expected open-source home is:
-
-- repository: `[GitHub repository URL]`
-- license: `[Apache-2.0 / MIT / other OSS license]`
-- issue tracking and releases: managed publicly through the repository
-
-The implementation team is expected to bring experience across:
-
-- Daml application development and package design,
-- Canton-integrated financial workflows,
-- fixed-point or protocol-math implementation,
-- audit preparation and issue remediation for security-sensitive code.
-
-### Why This Team Can Deliver
-
-`daml-u256` is not primarily a product-design challenge. It is a correctness, arithmetic, and auditability challenge. The strongest implementation team for this proposal is therefore one that can demonstrate:
-
-- prior Daml or Canton implementation work,
-- experience with precision-sensitive financial logic,
-- the discipline to publish tests, benchmarks, and documentation alongside code,
-- the ability to work effectively with an external security auditor.
-
-These details should be completed in the final submitted version with concrete names, prior work, and repository links.
-
----
-
 ## Specification
 
 ### 1. Objective
 
-The objective is to make advanced DeFi math feasible and reusable in Daml today.
+The objective is to make advanced DeFi math requiring U256-style arithmetic feasible and reusable in Daml today.
 
-Without a shared library, Daml teams that want to build math-intensive DeFi systems face the same bad options repeatedly:
+U256 is important for DeFi because many DeFi protocols are not merely "large-number applications." They rely on **exact integer semantics** for safety:
 
-- simplify the protocol until it no longer matches established DeFi designs,
-- move key calculations off-ledger and accept a weaker trust model, or
-- implement custom large-integer math privately and carry the audit burden alone.
+- price movement must be rounded consistently,
+- fee growth must not drift over time,
+- multiplication must not overflow before division is applied,
+- the same inputs must always produce the same outputs as the published math model.
+
+This is why battle-tested DeFi systems use fixed-width integer math and explicit fixed-point formats. 
 
 This proposal focuses on the part of DeFi that genuinely needs U256-style arithmetic:
 
@@ -88,7 +57,7 @@ This proposal focuses on the part of DeFi that genuinely needs U256-style arithm
 - overflow-safe multiplication followed by division,
 - fixed-point representations used by battle-tested DeFi systems.
 
-It does **not** claim that all DeFi on Canton depends on U256. Simpler products such as escrow, vesting, streaming, or bounded-rate financial workflows can be built without it. The point of `daml-u256` is that a narrower but highly important class of DeFi primitives becomes much more realistic once exact large-integer math is available as shared infrastructure.
+Not all DeFi on Canton depends on U256. The point of `daml-u256` is that a narrower but highly important class of DeFi primitives becomes much more realistic once exact large-integer math is available as shared infrastructure.
 
 The intended outcome is a reusable Daml library that provides:
 
@@ -163,17 +132,6 @@ The initial library is expected to contain four modules:
 4. `CLMMMath`
    - reference formulas for price movement and amount deltas
    - a small set of CLMM-style math utilities demonstrating how the lower layers are composed
-
-#### Why U256 Matters For DeFi
-
-U256 is important here because many DeFi protocols are not merely "large-number applications." They rely on **exact integer semantics** for safety:
-
-- price movement must be rounded consistently,
-- fee growth must not drift over time,
-- multiplication must not overflow before division is applied,
-- the same inputs must always produce the same outputs as the published math model.
-
-This is why battle-tested DeFi systems use fixed-width integer math and explicit fixed-point formats. A library that reproduces those semantics in Daml gives Canton teams a realistic path to implement math-intensive DeFi designs without inventing custom arithmetic in every project.
 
 #### Scope Boundaries
 
