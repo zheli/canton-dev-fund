@@ -68,7 +68,8 @@ The intended outcome is a reusable Daml library that provides:
 - reference CLMM math functions,
 - public documentation, tests, and audit artifacts.
 
-#### Why Daml's Numeric type is not sufficient
+#### Rationale
+##### Why Daml's Numeric type is not sufficient
 
 The most obvious alternative to this library is using Daml's built-in `Numeric n` type. It does not work for DeFi math. The numbers make this unambiguous:
 
@@ -82,7 +83,7 @@ The most obvious alternative to this library is using Daml's built-in `Numeric n
 
 `Numeric` is well-suited for recording final results — a settled price, a final balance, a fee amount. It is not suited for the intermediate arithmetic that DeFi protocols depend on. Every major DeFi design — AMMs, CLMMs, lending curves, fee accumulators — requires at least one multiplication step whose intermediate product exceeds 38 decimal digits. `daml-u256` exists to handle exactly those steps.
 
-#### Why not BigNumeric?
+##### Why not BigNumeric?
 
 `BigNumeric` is not a good foundation for this proposal either:
 
@@ -93,15 +94,9 @@ The most obvious alternative to this library is using Daml's built-in `Numeric n
 
 That makes `BigNumeric` useful historical context, but not a viable replacement for a stateful `U256` application library.
 
-#### Why a library instead of waiting for native support?
+##### Why a library instead of waiting for native support?
 
 A native `U256` primitive would require direct language and runtime work. A library can deliver value much sooner and does not depend on internal roadmap timing.
-
-#### Alternatives considered
-
-- **Project-specific private emulation:** feasible, but duplicates risk and audit cost across teams.
-- **Off-ledger computation with on-ledger settlement only:** workable for some systems, but weakens the case for fully transparent on-ledger protocol math.
-- **Wait for native language support:** valuable if it arrives, but not a dependable short-term plan for teams that need these primitives now.
 
 ### 2. Implementation Mechanics
 
