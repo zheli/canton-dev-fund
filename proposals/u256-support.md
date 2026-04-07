@@ -281,7 +281,7 @@ Project-specific acceptance conditions:
 This request is structured as:
 
 - `800,000 CC` for implementation, testing, benchmarks, documentation, and release work
-- `570,000 CC` for an independent external audit
+- `570,000 CC` for an independent external audit, addressing audit findings and public release. The amount is flexible based on the audit findings.
 
 This pricing treats `daml-u256` as a serious shared math library, not a small utility script:
 
