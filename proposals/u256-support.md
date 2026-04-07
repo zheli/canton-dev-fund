@@ -287,14 +287,14 @@ Project-specific acceptance conditions:
 
 ## Funding
 
-**Total Funding Request:** 1,085,000 CC
+**Total Funding Request:** 1,370,000 CC
 
 ### Funding Rationale
 
 This request is structured as:
 
 - `800,000 CC` for implementation, testing, benchmarks, documentation, and release work
-- `285,000 CC` for an independent external audit
+- `570,000 CC` for an independent external audit
 
 This pricing treats `daml-u256` as a serious shared math library, not a small utility script:
 
@@ -322,7 +322,7 @@ At a high level, this assumes:
 - Milestone 1 _(Public Alpha of Core U256 Arithmetic)_: 180,000 CC upon committee acceptance
 - Milestone 2 _(Exact FullMath and Fixed-Point Beta)_: 260,000 CC upon committee acceptance
 - Milestone 3 _(Reference DeFi Math Package)_: 360,000 CC upon committee acceptance
-- Milestone 4 _(Audit, Hardening, and Audited Release)_: 285,000 CC upon final release and acceptance
+- Milestone 4 _(Audit, Hardening, and Audited Release)_: 570,000 CC upon final release and acceptance
 
 ### Volatility Stipulation
 
