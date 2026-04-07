@@ -97,14 +97,6 @@ That makes `BigNumeric` useful historical context, but not a viable replacement 
 
 A native `U256` primitive would require direct language and runtime work. A library can deliver value much sooner and does not depend on internal roadmap timing.
 
-#### Why not claim that all DeFi is blocked?
-
-That would be too broad. Some DeFi-like workflows are already feasible with existing Daml types and simpler arithmetic. The stronger and more accurate claim is that **math-intensive DeFi is meaningfully constrained without a shared U256-style library**.
-
-#### Why include reference CLMM math?
-
-Because the proposal is much stronger if it proves protocol relevance. Shipping only a raw number type would leave reviewers asking whether the library is truly sufficient for real DeFi usage.
-
 #### Alternatives considered
 
 - **Project-specific private emulation:** feasible, but duplicates risk and audit cost across teams.
