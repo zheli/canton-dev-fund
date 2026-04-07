@@ -68,6 +68,49 @@ The intended outcome is a reusable Daml library that provides:
 - reference CLMM math functions,
 - public documentation, tests, and audit artifacts.
 
+#### Why Daml's Numeric type is not sufficient
+
+The most obvious alternative to this library is using Daml's built-in `Numeric n` type. It does not work for DeFi math. The numbers make this unambiguous:
+
+| Operation | Result | Daml Numeric max | Verdict |
+|---|---|---|---|
+| Single WAD-scaled price (1,500 at 10^18 scale) | 1.5 × 10^21 | `Numeric 18` integer part: 10^20 | **Overflows before multiplication** |
+| WAD × WAD intermediate (10^18 × 10^18) | 10^36 — 43 digits for realistic values | 38 digits | **Overflows by 5 digits** |
+| RAY × RAY intermediate (10^27 × 10^27) | 10^54 — needs 55 digits | 38 digits | **Exceeds Daml max by 10^16 — completely unrepresentable** |
+| Single Q64.96 value | max ≈ 10^48 | 10^38 | **Q64.96 cannot be stored at all** |
+| mulDiv 512-bit intermediate (U256 × U256) | up to 2^512 ≈ 10^154 | 10^38 | **Exceeds by 116 orders of magnitude** |
+
+`Numeric` is well-suited for recording final results — a settled price, a final balance, a fee amount. It is not suited for the intermediate arithmetic that DeFi protocols depend on. Every major DeFi design — AMMs, CLMMs, lending curves, fee accumulators — requires at least one multiplication step whose intermediate product exceeds 38 decimal digits. `daml-u256` exists to handle exactly those steps.
+
+#### Why not BigNumeric?
+
+`BigNumeric` is not a good foundation for this proposal either:
+
+- it was deprecated in Daml `2.9.1` and removed in `3.x`,
+- it is not serializable and therefore cannot be used directly in ledger state,
+- it is intended for intermediate computation rather than as a durable application type,
+- it does not provide the fixed-width integer semantics that EVM-style DeFi math depends on.
+
+That makes `BigNumeric` useful historical context, but not a viable replacement for a stateful `U256` application library.
+
+#### Why a library instead of waiting for native support?
+
+A native `U256` primitive would require direct language and runtime work. A library can deliver value much sooner and does not depend on internal roadmap timing.
+
+#### Why not claim that all DeFi is blocked?
+
+That would be too broad. Some DeFi-like workflows are already feasible with existing Daml types and simpler arithmetic. The stronger and more accurate claim is that **math-intensive DeFi is meaningfully constrained without a shared U256-style library**.
+
+#### Why include reference CLMM math?
+
+Because the proposal is much stronger if it proves protocol relevance. Shipping only a raw number type would leave reviewers asking whether the library is truly sufficient for real DeFi usage.
+
+#### Alternatives considered
+
+- **Project-specific private emulation:** feasible, but duplicates risk and audit cost across teams.
+- **Off-ledger computation with on-ledger settlement only:** workable for some systems, but weakens the case for fully transparent on-ledger protocol math.
+- **Wait for native language support:** valuable if it arrives, but not a dependable short-term plan for teams that need these primitives now.
+
 ### 2. Implementation Mechanics
 
 The project will be delivered as a pure Daml library and reference package, with no protocol or runtime changes required.
@@ -333,53 +376,6 @@ A shared, audited `daml-u256` library improves the ecosystem in three ways:
 - it lowers the cost of building advanced DeFi designs on Canton,
 - it reduces repeated private implementations of the same risky math,
 - it gives the ecosystem a reusable foundation even if native language support arrives later.
-
----
-
-## Rationale
-
-### Why Daml's Numeric type is not sufficient
-
-The most obvious alternative to this library is using Daml's built-in `Numeric n` type. It does not work for DeFi math. The numbers make this unambiguous:
-
-| Operation | Result | Daml Numeric max | Verdict |
-|---|---|---|---|
-| Single WAD-scaled price (1,500 at 10^18 scale) | 1.5 × 10^21 | `Numeric 18` integer part: 10^20 | **Overflows before multiplication** |
-| WAD × WAD intermediate (10^18 × 10^18) | 10^36 — 43 digits for realistic values | 38 digits | **Overflows by 5 digits** |
-| RAY × RAY intermediate (10^27 × 10^27) | 10^54 — needs 55 digits | 38 digits | **Exceeds Daml max by 10^16 — completely unrepresentable** |
-| Single Q64.96 value | max ≈ 10^48 | 10^38 | **Q64.96 cannot be stored at all** |
-| mulDiv 512-bit intermediate (U256 × U256) | up to 2^512 ≈ 10^154 | 10^38 | **Exceeds by 116 orders of magnitude** |
-
-`Numeric` is well-suited for recording final results — a settled price, a final balance, a fee amount. It is not suited for the intermediate arithmetic that DeFi protocols depend on. Every major DeFi design — AMMs, CLMMs, lending curves, fee accumulators — requires at least one multiplication step whose intermediate product exceeds 38 decimal digits. `daml-u256` exists to handle exactly those steps.
-
-### Why not BigNumeric?
-
-`BigNumeric` is not a good foundation for this proposal either:
-
-- it was deprecated in Daml `2.9.1` and removed in `3.x`,
-- it is not serializable and therefore cannot be used directly in ledger state,
-- it is intended for intermediate computation rather than as a durable application type,
-- it does not provide the fixed-width integer semantics that EVM-style DeFi math depends on.
-
-That makes `BigNumeric` useful historical context, but not a viable replacement for a stateful `U256` application library.
-
-### Why a library instead of waiting for native support?
-
-A native `U256` primitive would require direct language and runtime work. A library can deliver value much sooner and does not depend on internal roadmap timing.
-
-### Why not claim that all DeFi is blocked?
-
-That would be too broad. Some DeFi-like workflows are already feasible with existing Daml types and simpler arithmetic. The stronger and more accurate claim is that **math-intensive DeFi is meaningfully constrained without a shared U256-style library**.
-
-### Why include reference CLMM math?
-
-Because the proposal is much stronger if it proves protocol relevance. Shipping only a raw number type would leave reviewers asking whether the library is truly sufficient for real DeFi usage.
-
-### Alternatives considered
-
-- **Project-specific private emulation:** feasible, but duplicates risk and audit cost across teams.
-- **Off-ledger computation with on-ledger settlement only:** workable for some systems, but weakens the case for fully transparent on-ledger protocol math.
-- **Wait for native language support:** valuable if it arrives, but not a dependable short-term plan for teams that need these primitives now.
 
 ---
 
