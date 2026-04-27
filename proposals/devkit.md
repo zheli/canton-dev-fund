@@ -105,7 +105,8 @@ The core lifecycle commands are part of the first usable CLI release. Automation
 | `canton-devkit localnet doctor` | Diagnose host readiness | Checks Docker, Compose v2, permissions, ports, memory, disk, and supported platform assumptions. |
 
 ###### Web UI Features
-All features covered by CLI commands but with a user-friendly interface.
+
+The Web UI will provide a LocalNet dashboard showing named instances, service health, selected Splice version, endpoints, ports, credential locations, participant readiness, and recent logs. It will include service-level log views, participant/party/package views, links into Grafana dashboards, and quick actions for common LocalNet lifecycle operations such as start, stop, restart, status, and cleanup.
 
 ###### Optional AI Agent Skill Documents
 
