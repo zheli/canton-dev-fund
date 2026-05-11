@@ -10,9 +10,9 @@
 
 ## Abstract
 
-**Canton DevKit** is a proposed standalone, language-neutral LocalNet operations, debugging, observability, and CIP-56 testing toolkit for the Canton network. It makes local Canton development faster and more discoverable while building on the existing Splice LocalNet and DPM toolchains rather than replacing them.
+**Canton DevKit** is a proposed standalone, language-neutral LocalNet operations, debugging, observability, and CIP-0112 (token standard V2) testing local toolkit for the Canton network. It makes local Canton development faster and more discoverable while building on the existing Splice LocalNet and DPM toolchains rather than replacing them.
 
-DevKit packages common LocalNet workflows into a native CLI and Web UI: starting and managing named LocalNets, inspecting services and endpoints, uploading and inspecting DARs, exploring live contracts and transactions, viewing developer-focused observability dashboards, and testing CIP-56 token flows locally. 
+DevKit packages common LocalNet workflows into a native CLI and Web UI: starting and managing named LocalNets, inspecting services and endpoints, uploading and inspecting DARs, exploring live contracts and transactions, viewing developer-focused observability dashboards, and testing CIP-0112 token flows locally. 
 
 ---
 
@@ -28,7 +28,7 @@ The current official LocalNet stack creates significant friction for onboarding,
 * Observability setup
 * Ad-hoc scripts and tools for inspection and token operations
 
-The goal is to deliver a complementary DevKit for local Canton development. This maintained tooling will enable any developer or automation workflow to manage the complete lifecycle of one or more LocalNets using simple commands or a UI, monitor and explore activity, and experiment with CantonCoin and CIP-56 tokens locally.
+The goal is to deliver a complementary DevKit for local Canton development. This maintained tooling will enable any developer or automation workflow to manage the complete lifecycle of one or more LocalNets using simple commands or a UI, monitor and explore activity, and experiment with CantonCoin and CIP-0112 flows locally.
 
 ### 2. Implementation Mechanics
 (Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
@@ -82,6 +82,8 @@ Basic named-instance support belongs in the core orchestration model because Doc
 ###### Splice Version Compatibility
 
 `--version <version>` selects the Splice LocalNet version to run. DevKit documentation will include a compatibility matrix for supported Splice versions and platforms. The initial release will validate the initially supported version, while maintenance releases will cover smoke testing, compatibility updates, and patch releases for newer Splice releases.
+
+Compatibility with breaking Splice releases follows a best-effort model: the implementing team owns compatibility patches within a documented support window (or explicit cutoff) for each major Splice line, and will communicate timelines early when upstream breaking changes land so teams can plan upgrades. If ecosystem demand justifies it, stricter turnaround commitments (for example an SLA-style support tier) could be introduced by mutual agreement with the Committee without changing the default grant expectations.
 
 ###### LocalNet Configuration Model
 
@@ -165,13 +167,14 @@ The first-pass scope is the **live** view: ACS table, transaction list, and deta
 
 ##### Observability and Monitoring
 
-DevKit does **not** rebuild the observability stack from scratch. Instead, it bundles and configures a Prometheus/Grafana/Loki/Tempo stack tailored for LocalNet:
+DevKit does not rebuild the observability stack from scratch. Instead, it bundles and configures a Prometheus/Grafana stack tailored for LocalNet, with ongoing optimization of that stack where practical.
 
-* Ensures the observability profile is enabled by default when starting LocalNet.
-* Ships **Canton-specific Grafana dashboard presets** focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
+* Per-component toggles for Prometheus, Grafana so developers enable only what they need.
+* A single observability stack can serve multiple LocalNet instances on the host, reducing duplicated overhead when several environments are in use.
+* Ships Canton-specific Grafana dashboard presets focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
 * Adds a `canton-devkit metrics` subcommand that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
 * Documents how teams can extend or customize dashboards for their own services.
-* Introduces an experimental **"cost projection" view** that estimates how an application's observed transaction patterns would translate to traffic costs on Mainnet, helping developers understand running costs and project margins before deployment.
+* Introduces an experimental "cost projection view" that estimates how an application's observed transaction patterns would translate to traffic costs on Mainnet, helping developers understand running costs and project margins before deployment.
 
 ##### Optional AI Agent Skill Documents
 
@@ -181,18 +184,20 @@ Example workflows include starting or stopping a named LocalNet, checking readin
 
 Initial examples may be provided for Claude and Codex-style agent formats, but the supported integration surface is the stable `canton-devkit` CLI rather than any specific editor or AI platform.
 
-##### Local Token Faucets & CIP-56 Developer Toolkit
+##### Local Token Faucets & Token Standard Toolkit (CIP-0112)
 
-LocalNet already ships wallet UIs and a Registry API for token transfers, but developers still lack a CLI-driven faucet and a guided token-creation flow for everyday token operations. DevKit closes those gaps for **LocalNet testing**: it helps developers exercise CIP-56 token registration and common token flows before integrating with production-grade wallet, registry, custody, or compliance infrastructure.
+LocalNet already ships wallet UIs and a Registry API for token transfers, but developers still lack a CLI-driven faucet and a guided token-creation flow for everyday token operations. DevKit closes those gaps for LocalNet testing: it helps developers exercise token registration and common token flows before integrating with production-grade wallet, registry, custody, or compliance infrastructure.
 
-DevKit will use the LocalNet Ledger API, wallet UI/API, and registry APIs where available, but it will not act as a production issuer, custodian, wallet provider, or dApp connectivity layer. The committed token scope for this grant is CIP-56; support for other token standards would require explicit scope renegotiation.
+The token wizard and convenience commands (Milestone 3) target CIP-0112 first, so new projects align with the expected direction. CIP-56 (V1) compatibility and V1→V2 migration helpers remain optional and may be scoped to a later milestone or post-grant workstream depending on ecosystem demand and feedback during implementation.
 
-* `canton-devkit token create` — interactive "token wizard" to define new CIP-56 tokens (name, symbol, decimals, initial supply) and mint to test wallets.
-* `canton-devkit token [mint | transfer | burn | balance] {token-name} {amount} [--to wallet]` — convenience commands wrapping the Ledger API / Registry API for common token operations.
+DevKit will use the LocalNet Ledger API, wallet UI/API, and registry APIs where available, but it will not act as a production issuer, custodian, wallet provider, or dApp connectivity layer. The committed token scope for this grant is Canton token-standard testing on LocalNet centered on CIP-0112 (V2) as primary; support for other token standards or a broad dual-V1/V2 product surface would require explicit scope renegotiation.
+
+* `canton-devkit token create` — interactive "token wizard" to define new tokens (name, symbol, decimals, initial supply) and mint to test wallets, aligned with CIP-0112 semantics as the default path.
+* `canton-devkit token [mint | transfer | burn | balance] {token-name} {amount} [--to wallet]` — convenience commands wrapping the Ledger API / Registry API for common token operations on that default path.
 
 ### 3. Architectural Alignment
 
-The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the Canton token standard CIP‑56, making it easier for developers to test tokenized applications and integrations in a way that reflects Mainnet patterns.
+The Canton DevKit removes the friction of managing local test environments so developers can focus on building their applications. It aligns with the Development Fund's remit to support developer tooling and critical infrastructure as common goods, and is consistent with the milestone‑based, CC‑denominated funding and governance model formalized under CIP‑100. Token tooling is designed to follow the CIP-0112 (Token Standard V2) direction (evolving CIP-56), making it easier for developers to test tokenized applications and integrations in a way that reflects Mainnet patterns.
 
 ### 4. Backward Compatibility
 
@@ -230,7 +235,7 @@ No backward compatibility impact.
   - Web UI covering all CLI features from Milestone 1 with a user-friendly interface.  
   - Richer LocalNet automation conveniences, such as machine-readable status output, environment export for app/test configuration, named-instance discovery, enriched `doctor` diagnostics, and deeper troubleshooting guidance.  
   - Example CI workflow demonstrating LocalNet startup, readiness wait, optional DAR upload, test execution, and teardown.  
-  - Bundled Prometheus/Grafana/Loki/Tempo stack enabled by default when starting LocalNet.  
+  - Bundled Prometheus/Grafana stack with per-component enable/disable, sensible lightweight defaults, and documentation of minimum practical resources when the full stack is enabled.  
   - Canton-specific Grafana dashboard presets focused on DApp developers: transactions/sec, command completion latency, active contract counts, and per-template throughput.  
   - `canton-devkit metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
   - DAR management CLI (`canton-devkit dar upload/list/info/download/diff/remove/build/watch`) with multi-participant support, optional `dpm` integration, and SCU-aware diff signals.  
@@ -242,22 +247,22 @@ No backward compatibility impact.
   - (Experimental) Cost projection view estimating how observed transaction patterns translate to traffic costs on Mainnet.
 - **Adoption Metrics:** at least 3 companies have started using it in their daily Canton development workflow.
 
-### Milestone 3: Token Faucets & CIP-56 Token Tooling
+### Milestone 3: Token Faucets & Token Standard Tooling (CIP-0112)
 
 - **Estimated Delivery:** Month 9  
-- **Focus:** CantonCoin/CIP-56 tooling and UX polish.  
+- **Focus:** CantonCoin / Token Standard tooling and UX polish, CIP-0112.  
 - **Deliverables / Value Metrics:**  
-  - `canton-devkit token mint` CLI and Web UI minting for CIP-56 tokens on LocalNet.  
-  - `canton-devkit token create` interactive token wizard to define new CIP-56 tokens (name, symbol, decimals, initial supply).  
-  - `canton-devkit token transfer / burn / balance` convenience commands wrapping the Ledger API / Registry API.  
-  - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides.
+  - `canton-devkit token mint` CLI and Web UI minting for tokens on LocalNet on the CIP-0112 path.  
+  - `canton-devkit token create` interactive token wizard defining new tokens (name, symbol, decimals, initial supply) aligned with CIP-0112 as the default.  
+  - `canton-devkit token transfer / burn / balance` convenience commands wrapping the Ledger API / Registry API for that path.  
+  - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides (including explicit note of CIP-0112 scope and optional future CIP-56 support per ecosystem demand).
 
 ### Milestone 4: Maintenance and Marketing
 
 - **Estimated Delivery:** Month 12  
 - **Focus:** Stability, compatibility maintenance, and ecosystem outreach.  
 - **Deliverables / Value Metrics:**  
-  - Maintain a documented compatibility matrix for supported Splice releases and platforms.  
+  - Maintain a documented compatibility matrix for supported Splice releases and platforms, consistent with the support-window / best-effort policy described under Splice Version Compatibility.  
   - Run smoke tests against newer Splice releases and publish compatibility notes.  
   - Ship patch releases for compatibility fixes and high-priority user-reported bugs.  
   - Track external feedback through issues, release notes, or documented changelog entries.  
@@ -274,7 +279,7 @@ The Tech & Ops Committee will evaluate completion based on:
 * **Milestone-specific adoption criteria:**  
   * **Milestone 1:** **3 voting member companies** have installed a binary release and successfully run `localnet up/status/down` on macOS or Linux, with at least one tester validating named-instance isolation using explicit non-conflicting ports.  
   * **Milestone 2:** **5 voting member companies or representative Canton deployments** have used the Web UI, DAR workflow, contract explorer, transaction explorer, or observability workflow against their own DAR/application and provided feedback artifacts.  
-  * **Milestone 3:** At least **5 external projects/teams** demonstrate a LocalNet CIP-56 workflow such as `create -> mint -> transfer` or `mint -> transfer -> burn` and provide feedback or demo artifacts.  
+  * **Milestone 3:** At least **5 external projects/teams** demonstrate a LocalNet workflow on the CIP-0112 path such as `create -> mint -> transfer` or `mint -> transfer -> burn` and provide feedback or demo artifacts.  
   * **Milestone 4:** Sustained external adoption is demonstrated through at least **2 public workshops** and **1 case study/blog post**, plus compatibility updates across newer Splice releases and public issue or release-note evidence that feedback was incorporated.  
 * Acceptable adoption and feedback evidence includes GitHub issues, pull requests, release notes, written feedback, demo recordings, workshop materials, case studies, or Committee acceptance notes.  
 * Demonstrated functionality via scripts, demos, and documentation showing:  
@@ -286,7 +291,7 @@ The Tech & Ops Committee will evaluate completion based on:
   * Upload, list, inspect, and diff DAR packages across multiple participants of a named LocalNet, including an optional `dpm`-backed build+upload shortcut and watch-mode hot redeploy.  
   * Browse the Active Contract Set and transaction history live via both CLI and Web UI, with an explicit per-party visibility projection.  
   * Optional AI agent skill documents demonstrating use of documented `canton-devkit` commands to manage a named LocalNet, upload a DAR, and inspect resulting packages/contracts without requiring editor-specific integration.  
-  * CIP-56 token creation wizard, and CIP-56 token flows (mint, transfer, burn, balance) on LocalNet.  
+  * Token creation wizard and token flows (mint, transfer, burn, balance) on LocalNet targeting CIP-0112 as the default; optional CIP-56 support is out of scope for the committed acceptance bar unless later agreed.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
 * Evidence that feedback loops from external users are incorporated into releases (bug fixes, UX improvements, and docs updates).
 
@@ -302,7 +307,7 @@ Total: **1,665,900 CC** over **12 months**.
 
 * Milestone 1 (LocalNet Management — CLI): 555,300 CC upon committee acceptance.  
 * Milestone 2 (Web UI, Observability, Monitoring, DAR & Contract Tooling, Optional AI Agent Skill Documents): 555,300 CC upon committee acceptance.  
-* Milestone 3 (Token Faucets & CIP-56 Token Tooling): 555,300 CC upon final release and acceptance.  
+* Milestone 3 (Token Faucets & Token Standard Tooling, CIP-0112): 555,300 CC upon final release and acceptance.  
 * Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1–3 payments through month 12).
 
 Funding is requested in Canton Coin, consistent with the Development Fund's CC‑denominated, milestone‑based grants model under CIP‑100.
@@ -313,7 +318,11 @@ The proposed project duration is 9 months (core development, followed by 3 month
 
 * The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
 * If scope changes or delays requested by the Committee extend timelines beyond the original plan, remaining milestones and CC amounts can be renegotiated by mutual agreement.
-* The token tooling will only support the CIP-56 token standard; any other token standards released during the project will require renegotiation of the milestone scope and funding.
+* The committed token tooling targets CIP-0112 as the default path; optional CIP-56 compatibility or other token standards would require renegotiation of milestone scope and funding if pursued within the grant period.
+
+### Post-grant sustainability
+
+The twelve-month grant is structured to validate adoption using the milestone adoption metrics above. Beyond that window, the default expectation is continued open-source maintenance guided by community contribution. Sustainable operation may take the form of a follow-on maintenance grant, continued community-led maintenance, and/or handover or closer alignment with Digital Asset or the Canton Foundation—whichever the Committee judges best, informed by adoption evidence from the milestones. Nothing in this proposal binds the Foundation or Digital Asset to take ownership absent mutual agreement through the Fund’s governance process.
 
 ---
 
