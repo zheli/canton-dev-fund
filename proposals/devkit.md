@@ -1,6 +1,6 @@
 ## Development Fund Proposal
 
-**Author:**  Zhe Li <zhe@bitdynamics.me>, Srikanth Yeleswarapu <srikanth@bitdynamics.me>
+**Author:**  Zhe Li (Bit Dynamics AB)
 
 **Status:** Submitted  
 
