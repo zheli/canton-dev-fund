@@ -19,7 +19,7 @@ DevKit packages common LocalNet workflows into the dpm localnet command tree and
 
 ### 1. Objective
 
-According to the [Canton Network Developer Experience and Tooling Survey](https://forum.canton.network/t/canton-network-developer-experience-and-tooling-survey-analysis-2026/8412?u=zhe_bd), 41% of respondents cited Environment Setup & Node Operations as the task that took the longest to "get right." Developers are currently forced to be infrastructure engineers before they can be product builders.
+According to the [Canton Network Developer Experience and Tooling Survey](https://forum.canton.network/t/canton-network-developer-experience-and-tooling-survey-analysis-2026/8412), 41% of respondents cited Environment Setup & Node Operations as the task that took the longest to "get right." Developers are currently forced to be infrastructure engineers before they can be product builders.
 
 The current official LocalNet stack creates significant friction for onboarding, workshops, hackathons, and automated development workflows because it requires users to manually manage Docker containers, configuration files, environment variables, observability setup, and ad-hoc scripts for inspection and token operations. The survey also rated Local Development Frameworks as the most critical need, with specific mentions of tools like Hardhat, Foundry, and Anchor — a unified CLI toolchain that helps with orchestrating local node environments and automating testing and deployment pipelines without complex manual configuration.
 
@@ -270,32 +270,31 @@ No backward compatibility impact.
   - Cross-platform testing, UX polish across CLI and Web UI, and consolidated documentation, FAQs, and troubleshooting guides (including explicit note of CIP-0112 scope and optional future CIP-56 support per ecosystem demand).
 - **Adoption Metrics:** at least 7 external projects/teams demonstrate a LocalNet workflow on the CIP-0112 path.
 
-### Milestone 4: Maintenance and Marketing
+### Milestone 4: Adoption Validation and Ecosystem Outreach
 
 - **Estimated Delivery:** Month 12  
-- **Focus:** Stability, compatibility maintenance, and ecosystem outreach.  
+- **Focus:** Demonstrate meaningful external adoption of DevKit and publish ecosystem-facing validation artifacts.  
 - **Deliverables / Value Metrics:**  
-  - Maintain a documented compatibility matrix for supported Splice releases and platforms, consistent with the support-window / best-effort policy described under Splice Version Compatibility.  
-  - Run smoke tests against newer Splice releases and publish compatibility notes.  
-  - Ship patch releases for compatibility fixes and high-priority user-reported bugs.  
+  - Document at least 5 external apps/projects using DevKit in real development or testing workflows, evidenced by issue reports, demos, written feedback, case studies, or maintainer attestations.  
   - Publish a short adoption transparency update in release notes or changelog entries, including release/download/install trends, stars/forks/watchers (labeled as visibility), and telemetry aggregates if enabled.  
   - Report progress toward a composite floor of at least 250 cumulative installs/downloads across supported distribution channels (for example: GitHub Releases, Homebrew, install script).  
   - Track external feedback through issues, release notes, or documented changelog entries.  
   - Host 2 online/offline workshops about the Canton DevKit.  
   - Publish 1 case study or blog post.
-- **Adoption Metrics:** sustain at least 8 external teams actively using the tool by Milestone 4 acceptance.
+- **Adoption Metrics:** at least 5 external apps/projects are actively using DevKit in real development or testing workflows by Milestone 4 acceptance.
 
 ### Adoption Measurement
 
-Sustained external adoption is evaluated using a composite view rather than any single KPI. No individual public metric is treated as definitive proof of real usage.
+Meaningful external adoption is evaluated using a composite view rather than any single KPI, no single public metric is treated as definitive proof on its own.
 
 DevKit adoption reporting will combine:
 
 * Installation-oriented signals (GitHub release downloads, package-manager installs such as Homebrew where available, and install-script usage counts where applicable).
 * Visibility signals (GitHub stars, forks, watchers) used as discoverability indicators rather than direct usage proof.
 * Privacy-preserving telemetry aggregates (if implemented), with clear documentation and user opt-out controls.
+* Qualitative usage evidence such as issue reports, demos, case studies, feedback notes, or maintainer attestations from external teams/projects.
 
-Milestone 4 includes a hard composite floor of at least 250 cumulative installs/downloads across supported channels and sustained usage by at least 8 external teams.
+Milestone 4 targets documented adoption across at least 5 external apps/projects, supported by a composite floor of at least 250 cumulative installs/downloads across supported channels and the qualitative evidence above.
 
 ---
 
@@ -308,7 +307,8 @@ The Tech & Ops Committee will evaluate completion based on:
   * **Milestone 1:** 3 external companies/teams have installed DevKit (via the DPM component, the standalone binary, or both) and successfully run `localnet up/status/down` on macOS or Linux, with at least one tester validating named-instance isolation using explicit non-conflicting ports.  
   * **Milestone 2:** 5 external companies/teams or representative Canton deployments have used the Web UI, DAR workflow, contract explorer, transaction explorer, or observability workflow against their own DAR/application and provided feedback artifacts.  
   * **Milestone 3:** At least 7 external projects/teams demonstrate a LocalNet workflow on the CIP-0112 path such as `create -> mint -> transfer` or `mint -> transfer -> burn` and provide feedback or demo artifacts.  
-  * **Milestone 4:** Sustained external adoption is demonstrated through at least 2 public workshops, 1 case study/blog post, at least 8 sustained external teams actively using the tool, and at least 250 cumulative installs/downloads across supported distribution channels; this is evaluated with composite trend evidence (downloads/installs + optional telemetry + visibility signals), not any single metric in isolation, plus compatibility updates across newer Splice releases and public issue or release-note evidence that feedback was incorporated.  
+  * **Milestone 4:** Meaningful external adoption is demonstrated through at least 2 public workshops, 1 case study/blog post, documented usage by at least 5 external apps/projects in real development or testing workflows, and at least 250 cumulative installs/downloads across supported distribution channels; this is evaluated with composite evidence (downloads/installs + optional telemetry + visibility signals + direct feedback/case-study evidence), not any single metric in isolation.  
+* If the optional Maintenance & Compatibility Extension is approved, completion of that extension would be evaluated based on a maintained compatibility matrix for supported Splice releases/platforms, smoke tests against newer Splice releases, published compatibility notes, patch releases for compatibility fixes and high-priority bugs, and documented incorporation of user feedback during the extension term.  
 * Acceptable adoption and feedback evidence includes GitHub issues, pull requests, release notes, written feedback, demo recordings, workshop materials, case studies, Committee acceptance notes, release/download/install statistics, documented telemetry summaries (if enabled), and repository visibility metrics when reported as trends.  
 * Demonstrated functionality via scripts, demos, and documentation showing:  
   * Installation via the **native DPM component** (`dpm install package`) as the primary path, and via the standalone Go binary on macOS and Linux as the additional path; neither requires users to install a programming language runtime.  
@@ -329,28 +329,42 @@ The Tech & Ops Committee will evaluate completion based on:
 
 **Total Funding Request:**
 
-Total: **1,665,900 CC** over **12 months**.
+Base proposal total: **1,900,000 CC** over **12 months**.
 
 ### Payment Breakdown by Milestone
 
-* Milestone 1 (LocalNet Management — CLI): 555,300 CC upon committee acceptance.  
-* Milestone 2 (Web UI, Observability, Monitoring, DAR & Contract Tooling, Optional AI Agent Skill Documents): 555,300 CC upon committee acceptance.  
-* Milestone 3 (Token Faucets & Token Standard Tooling, CIP-0112): 555,300 CC upon final release and acceptance.  
-* Milestone 4 (Maintenance and Marketing): 0 CC upon completion (costs covered by Milestones 1–3 payments through month 12).
+* Milestone 1 (LocalNet Management — CLI): 400,000 CC upon committee acceptance.  
+* Milestone 2 (Web UI, Observability, Monitoring, DAR & Contract Tooling, Optional AI Agent Skill Documents): 400,000 CC upon committee acceptance.  
+* Milestone 3 (Token Faucets & Token Standard Tooling, CIP-0112): 500,000 CC upon final release and acceptance.  
+* Milestone 4 (Adoption Validation and Ecosystem Outreach): 600,000 CC upon committee acceptance.
+
+### Optional Maintenance & Compatibility Extension
+
+An additional **600,000 CC** is proposed as a separate optional extension covering **12 months** of post-grant maintenance and Splice upgrade support after completion of the base proposal.
+
+If approved, this optional extension would cover:
+
+* Maintaining a documented compatibility matrix for supported Splice releases and platforms, consistent with the support-window / best-effort policy described under Splice Version Compatibility.
+* Running smoke tests against newer Splice releases and publishing compatibility notes.
+* Shipping patch releases for compatibility fixes and high-priority user-reported bugs.
+* Ongoing incorporation of external feedback into maintenance releases.
+
+This optional extension is not included in the **1,900,000 CC** base proposal total above. If approved in addition to the base proposal, the combined total would be **2,500,000 CC**.
 
 Funding is requested in Canton Coin, consistent with the Development Fund's CC‑denominated, milestone‑based grants model under CIP‑100.
 
 ### Volatility Stipulation
 
-The proposed project duration is 9 months (core development, followed by 3 months of maintenance).
+The proposed base project duration is 12 months, with Months 1-9 focused on core delivery and Months 10-12 focused on adoption validation and ecosystem outreach.
 
-* The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
+* The base grant is denominated in a fixed amount of Canton Coin (**1,900,000 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
 * If scope changes or delays requested by the Committee extend timelines beyond the original plan, remaining milestones and CC amounts can be renegotiated by mutual agreement.
+* If the optional Maintenance & Compatibility Extension is approved, its support term, checkpoints, and CC allocation can be finalized by mutual agreement through the Committee process.
 * The committed token tooling targets CIP-0112 as the default path; optional CIP-56 compatibility or other token standards would require renegotiation of milestone scope and funding if pursued within the grant period.
 
 ### Post-grant sustainability
 
-The twelve-month grant is structured to validate adoption using the milestone adoption metrics above. Beyond that window, the default expectation is continued open-source maintenance guided by community contribution. Sustainable operation may take the form of a follow-on maintenance grant, continued community-led maintenance, and/or handover or closer alignment with Digital Asset or the Canton Foundation—whichever the Committee judges best, informed by adoption evidence from the milestones. Nothing in this proposal binds the Foundation or Digital Asset to take ownership absent mutual agreement through the Fund’s governance process.
+The base twelve-month grant is structured to deliver the product and validate adoption using the milestone adoption metrics above. Beyond that window, sustainable operation may take the form of the optional Maintenance & Compatibility Extension described above, continued open-source/community-led maintenance, and/or handover or closer alignment with Digital Asset or the Canton Foundation—whichever the Committee judges best, informed by adoption evidence from the milestones. Nothing in this proposal binds the Foundation or Digital Asset to take ownership absent mutual agreement through the Fund’s governance process.
 
 ---
 
