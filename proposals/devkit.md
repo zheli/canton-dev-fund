@@ -185,7 +185,6 @@ DevKit does not rebuild the observability stack from scratch. Instead, it bundle
 * Ships Canton-specific Grafana dashboard presets focused on DApp developers (as opposed to operator-level dashboards): transactions/sec, command completion latency, active contract counts, and per-template throughput.
 * Adds a `dpm localnet metrics` subcommand (or `canton-devkit localnet metrics` standalone) that prints Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage) for quick terminal-based checks.
 * Documents how teams can extend or customize dashboards for their own services.
-* Introduces an experimental "cost projection view" that estimates how an application's observed transaction patterns would translate to traffic costs on Mainnet, helping developers understand running costs and project margins before deployment.
 
 ##### Optional AI Agent Skill Documents
 
@@ -256,7 +255,6 @@ No backward compatibility impact.
   - Contract tracking Web UI "Explorer" with live ACS table, transaction timeline, contract detail drawer, and explicit per-party visibility projection.  
   - Optional AI agent skill documents demonstrating safe `dpm localnet` workflows for LocalNet lifecycle, DAR upload, package inspection, contract queries, and log/status checks.  
   - Documentation on recommended usage, dashboard customization, DAR workflows, contract explorer usage, and optional AI agent skill documents.  
-  - (Experimental) Cost projection view estimating how observed transaction patterns translate to traffic costs on Mainnet.
 - **Adoption Metrics:** at least 5 companies/teams have started using it in their daily Canton development workflow.
 
 ### Milestone 3: Token Faucets & Token Standard Tooling (CIP-0112)
