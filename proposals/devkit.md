@@ -28,7 +28,7 @@ The current official LocalNet stack creates significant friction for onboarding,
 * Observability setup
 * Ad-hoc scripts and tools for inspection and token operations
 
-The goal is to deliver a unified DevKit. This maintained tooling will enable any developer or automation workflow to manage the complete lifecycle of one or more LocalNets—using simple commands or a UI—monitor and explore activity, and easily experiment with CantonCoin and CIP-56 tokens.
+The goal is to deliver a complementary DevKit for local Canton development. This maintained tooling will enable any developer or automation workflow to manage the complete lifecycle of one or more LocalNets using simple commands or a UI, monitor and explore activity, and experiment with CantonCoin and CIP-56 tokens locally.
 
 ### 2. Implementation Mechanics
 (Explain how the solution will be implemented. Include technologies, components, workflows, and operational approach.)
@@ -197,7 +197,7 @@ The Canton DevKit removes the friction of managing local test environments so de
 
 ### 4. Backward Compatibility
 
-The Canton DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, DAML semantics, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
+The Canton DevKit primarily targets LocalNet developer environments and does not change Canton protocol behavior, Daml semantics, or existing production deployments. Developers can continue using the Splice LocalNet Docker stack.
 
 No backward compatibility impact.
 
@@ -208,7 +208,7 @@ No backward compatibility impact.
 ### Milestone 1: LocalNet Management — CLI
 
 - **Estimated Delivery:** Month 3  
-- **Focus:** One-click LocalNet lifecycle management via CLI.  
+- **Focus:** Single-command LocalNet lifecycle management via CLI.  
 - **Deliverables /  Metrics:**  
   - `canton-devkit localnet up/down/restart/clean/status/logs` CLI commands with auto-generated configs, keys, identities, and printed endpoints and credentials.  
   - Version pinning (`--version`) and basic named-instance isolation (`--name`) using deterministic Docker Compose project names, labels, and explicit port configuration.  
@@ -241,7 +241,7 @@ No backward compatibility impact.
   - Optional AI agent skill documents demonstrating safe `canton-devkit` workflows for LocalNet lifecycle, DAR upload, package inspection, contract queries, and log/status checks.  
   - Documentation on recommended usage, dashboard customization, DAR workflows, contract explorer usage, and optional AI agent skill documents.  
   - (Experimental) Cost projection view estimating how observed transaction patterns translate to traffic costs on Mainnet.
-- **Adoption Metrics:** at least 3 companies have started using it in their daily canton workflow.
+- **Adoption Metrics:** at least 3 companies have started using it in their daily Canton development workflow.
 
 ### Milestone 3: Token Faucets & CIP-56 Token Tooling
 
@@ -273,13 +273,14 @@ The Tech & Ops Committee will evaluate completion based on:
 
 * Delivery of the Canton DevKit capabilities specified for each milestone.  
 * **Milestone-specific adoption criteria:**  
-  * **Milestone 1:** **3 voting member companies** have reviewed the tool and accepted it for LocalNet setup and lifecycle usage.  
-  * **Milestone 2:** **5 voting member companies or representative Canton deployments** have run the tool on their codebases/workflows and confirmed practical usability.  
-  * **Milestone 3:** At least **5 external projects/teams** demonstrate end-to-end CIP-56 workflow usage with DevKit (`create -> mint -> transfer` and/or `burn`) and provide feedback or demo artifacts.  
-  * **Milestone 4:** Sustained external adoption is demonstrated through at least **2 public workshops** and **1 case study/blog post**, plus compatibility maintenance across newer Splice releases.  
+  * **Milestone 1:** **3 voting member companies** have installed a binary release and successfully run `localnet up/status/down` on macOS or Linux, with at least one tester validating named-instance isolation using explicit non-conflicting ports.  
+  * **Milestone 2:** **5 voting member companies or representative Canton deployments** have used the Web UI, DAR workflow, contract explorer, transaction explorer, or observability workflow against their own DAR/application and provided feedback artifacts.  
+  * **Milestone 3:** At least **5 external projects/teams** demonstrate a LocalNet CIP-56 workflow such as `create -> mint -> transfer` or `mint -> transfer -> burn` and provide feedback or demo artifacts.  
+  * **Milestone 4:** Sustained external adoption is demonstrated through at least **2 public workshops** and **1 case study/blog post**, plus compatibility updates across newer Splice releases and public issue or release-note evidence that feedback was incorporated.  
+* Acceptable adoption and feedback evidence includes GitHub issues, pull requests, release notes, written feedback, demo recordings, workshop materials, case studies, or Committee acceptance notes.  
 * Demonstrated functionality via scripts, demos, and documentation showing:  
   * Installation from standalone Go-based binaries on macOS and Linux without requiring users to install a programming language runtime.  
-  * One-command LocalNet startup and teardown, including named-instance isolation, explicit port configuration, and snapshot/restore workflows.  
+  * Single-command LocalNet startup and teardown, including named-instance isolation, explicit port configuration, and snapshot/restore workflows.  
   * Docker prerequisite handling with clear failures when Docker is missing, unreachable, lacks Compose v2, has insufficient resources, or has port conflicts.  
   * Web UI covering the same LocalNet management features as the CLI.  
   * Working Grafana dashboards for throughput, latency, and resource usage on a sample DApp.  
@@ -313,7 +314,7 @@ The proposed project duration is 9 months (core development, followed by 3 month
 
 * The grant is denominated in a fixed amount of Canton Coin (**1,665,900 CC**) with milestone allocations as above, and will be subject to re‑evaluation at the 6‑month mark to account for material CC/USD volatility, in line with the Fund's governance guidelines.  
 * If scope changes or delays requested by the Committee extend timelines beyond the original plan, remaining milestones and CC amounts can be renegotiated by mutual agreement.
-* The token tooling will only support CIP-56 token standard, any other token standards released during the project will require re-negotiation of the milestone scope and funding.
+* The token tooling will only support the CIP-56 token standard; any other token standards released during the project will require renegotiation of the milestone scope and funding.
 
 ---
 
@@ -339,12 +340,12 @@ Upon release of major components (e.g., first public DevKit release, explorer, t
 
 The Splice source code for Canton already provides a LocalNet environment, but developers must manually manage Docker, configs, and observability and often build ad‑hoc tools for exploring transactions, contract state, and token operations. This slows down onboarding for new teams, workshops, and hackathons, and leads to fragmented, privately maintained tooling rather than shared public goods.
 
-By consolidating one‑click LocalNet lifecycle management, observability and token tooling into a single CLI tool suite, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
+By consolidating LocalNet lifecycle management, observability, and token testing into a single CLI and Web UI tool suite, the proposal significantly lowers the barrier to entry for building on Canton. It directly supports the Fund's aim to back developer tooling and critical infrastructure that act as common goods and deliver long‑term value across the ecosystem.
 
 ---
 
 ## Rationale
 
-Reducing the operational overhead of local development is a prerequisite for sustainable ecosystem growth; developer time reclaimed from infrastructure management translates directly into faster application delivery and broader adoption. Delivering functionality in three incremental, self‑contained milestones enables early value (one‑click LocalNet) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
+Reducing the operational overhead of local development is a prerequisite for sustainable ecosystem growth; developer time reclaimed from infrastructure management translates directly into faster application delivery and broader adoption. Delivering functionality in three incremental, self‑contained milestones enables early value (single-command LocalNet lifecycle management) and iterative refinement (metrics, tokens) with clear checkpoints for the Committee.
 
-Alternative approaches—such as separate, uncoordinated tools for observability, explorers, and token tooling—would increase maintenance burden and fragment the developer experience. A unified Canton DevKit CLI tool suite offers a single, opinionated path that can offer an alternative to the existing tooling for local development, while remaining extensible so the community can adapt it to evolving needs and future CIPs.
+Separate, uncoordinated tools for observability, explorers, and token testing would increase maintenance burden and fragment the developer experience. A unified Canton DevKit CLI and Web UI tool suite offers a complementary local workflow layer over existing Canton tooling, while remaining extensible so the community can adapt it to evolving needs and future CIPs.
