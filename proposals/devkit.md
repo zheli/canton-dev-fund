@@ -64,7 +64,7 @@ Canton already ships several developer tools. The DevKit is designed to compleme
 | **DPM** (`dpm`) | DevKit is distributed as a **native DPM component** that registers a single `localnet` top-level command, so DPM users access all DevKit features as `dpm localnet <subcommand>` (e.g. `dpm localnet up`, `dpm localnet dar upload`). Command naming will be coordinated with the DPM maintainers to avoid conflicts with future builtins. |
 | **Existing LocalNet setup in Splice codebase** | Splice LocalNet remains the underlying runtime. DevKit selects and version-pins known Splice LocalNet artifacts, generates local configuration, manages Docker lifecycle, exposes endpoints, health, logs, snapshots, and explorer workflows, while still allowing developers to use raw Splice LocalNet directly. |
 | **`cn-quickstart` and official getting-started flows** | DevKit does not decide what official docs should recommend or replace quickstart content. It can provide a repeatable LocalNet lifecycle and inspection layer for quickstart-style development, workshops, and demos. |
-| **Daml Shell** | DevKit does **not** replace Daml Shell. Developers who prefer a REPL continue to use it. DevKit complements it with a CLI + Web UI experience that spans **multiple participants of a named LocalNet**, adds DAR package management, and surfaces ACS and transaction views in a visual explorer. |
+| **Daml Shell** (`dpm daml-shell`) | DevKit does **not** replace Daml Shell, and intentionally does **not** duplicate its commands. One-shot single-contract lookup (`contract <id>`), single-transaction inspection (`transaction <id|at offset>`), per-template `active/creates/archives` listings, and CSV ACS export (`\| csv \| export`) remain the Daml Shell REPL's responsibility. DevKit adds capabilities Daml Shell does not provide: live `contracts watch` (streaming creates/archives), multi-filter `tx ls` (party + offset range + template in one query), per-party `tx replay` (visibility projection), and a visual Web UI explorer that spans **multiple participants of a named LocalNet**. |
 
 #### Canton DevKit Features
 
@@ -152,12 +152,11 @@ The proposal already notes that developers "often build ad-hoc tools for explori
 The first-pass scope is the **live** view: ACS table, transaction list, and detail views backed by Ledger API v2. Historical / archived-contract search via PQS is explicitly deferred.
 
 ###### New dpm Commands
-* `dpm localnet contracts show <contract-id>` — pretty-print payload, signatories, observers, creation transaction, archival transaction (if any), package/version, and interface views.
-* `dpm localnet contracts watch [filters]` — live tail of create/archive events, similar to `kubectl get -w`.
-* `dpm localnet contracts export [filters] [--format json|csv]` — snapshot the filtered ACS to a file for test fixtures or diffing.
-* `dpm localnet tx ls [--party <p>] [--from <offset>] [--to <offset>] [--template <FQN>]` (or `canton-devkit localnet tx ls ...` standalone) — list transactions with filters.
-* `dpm localnet tx show <tx-id|offset>` — render the transaction as a tree of creates and (nested) exercises, with contract IDs and choice arguments.
-* `dpm localnet tx replay <tx-id>` — reconstruct the per-party visibility projection ("what this party sees") for debugging privacy and authorization issues.
+* `dpm localnet contracts watch [filters]` — live tail of create/archive events, similar to `kubectl get -w`. (Not provided by `daml-shell`, which reads PQS snapshots rather than streaming live updates.)
+* `dpm localnet tx ls [--party <p>] [--from <offset>] [--to <offset>] [--template <FQN>]` (or `canton-devkit localnet tx ls ...` standalone) — list transactions with multi-dimensional filters (party + offset range + template). (`daml-shell` exposes per-template `creates`/`archives` listings bounded by session offsets but has no unified transactions-list with party filtering.)
+* `dpm localnet tx replay <tx-id>` — reconstruct the per-party visibility projection ("what this party sees") for debugging privacy and authorization issues. (Not provided by `daml-shell` or any other shipped DPM component.)
+
+One-shot contract and transaction lookups (e.g. fetching a single contract by ID, rendering a single transaction tree, or exporting the ACS as CSV) are already covered by `dpm daml-shell` (`contract <id>`, `transaction <id|at offset>`, `active <FQN> | csv | export <file>`). DevKit does not duplicate those commands at the CLI level; the Web UI surfaces the same data visually.
 
 ###### Web UI Features
 * **Explorer** section with a live ACS table filterable by template, party, and participant; payload previews, age, signatories/observers, and a detail drawer.
@@ -177,7 +176,7 @@ The first-pass scope is the **live** view: ACS table, transaction list, and deta
 
 ###### Scope Boundaries
 * No PQS dependency in the first pass; archived-contract history beyond what the live Ledger API exposes, and SQL-style historical queries, are out of scope.
-* DevKit does not re-implement Daml Shell's REPL; it offers a complementary visual + CLI explorer.
+* DevKit does not re-implement Daml Shell's REPL or duplicate its commands. The DevKit CLI focuses on capabilities `daml-shell` does not offer (live `contracts watch`, multi-filter `tx ls`, and per-party `tx replay`); the Web UI provides the visual counterpart for the same data.
 
 ##### Observability and Monitoring
 
@@ -258,7 +257,7 @@ No backward compatibility impact.
   - `dpm localnet metrics` subcommand printing Grafana dashboard URLs and a concise text summary of key metrics (throughput, latency p50/p99, resource usage).  
   - DAR management CLI (`dpm localnet dar upload/list/info/download/diff/remove/build-upload/watch`) with multi-participant support, optional `dpm build` integration, and SCU-aware diff signals.  
   - DAR Web UI with drag-and-drop upload, per-participant vetting toggles, package explorer tree, diff viewer, and hot-deploy indicator.  
-  - Contract tracking CLI (`dpm localnet contracts show/watch/export` and `dpm localnet tx ls/show/replay`) backed by Ledger API v2.  
+  - Contract tracking CLI (`dpm localnet contracts watch` and `dpm localnet tx ls/replay`) backed by Ledger API v2, scoped to capabilities not already provided by `dpm daml-shell` (live watch, multi-filter transaction listing, per-party visibility projection).  
   - Contract tracking Web UI "Explorer" with live ACS table, transaction timeline, contract detail drawer, and explicit per-party visibility projection.  
   - Optional AI agent skill documents demonstrating safe `dpm localnet` workflows for LocalNet lifecycle, DAR upload, package inspection, contract queries, and log/status checks.  
   - Documentation on recommended usage, dashboard customization, DAR workflows, contract explorer usage, and optional AI agent skill documents.  
@@ -322,7 +321,7 @@ The Tech & Ops Committee will evaluate completion based on:
   * Web UI covering the same LocalNet management features as the CLI.  
   * Working Grafana dashboards for throughput, latency, and resource usage on a sample DApp.  
   * Upload, list, inspect, and diff DAR packages across multiple participants of a named LocalNet, including the `dpm`-backed `dar build-upload` convenience command and watch-mode hot redeploy.  
-  * Browse the Active Contract Set and transaction history live via both CLI and Web UI, with an explicit per-party visibility projection.  
+  * Live-watch ACS changes and list transactions with multi-dimensional filters via CLI (`contracts watch`, `tx ls`), reconstruct per-party visibility projection via `tx replay`, and browse the Active Contract Set and transaction history via the Web UI.  
   * Optional AI agent skill documents demonstrating use of documented `dpm localnet` commands (or equivalent `canton-devkit localnet` commands) to manage a named LocalNet, upload a DAR, and inspect resulting packages/contracts without requiring editor-specific integration.  
   * Token creation wizard and token flows (mint, transfer, burn, balance) on LocalNet targeting CIP-0112 as the default; optional CIP-56 support is out of scope for the committed acceptance bar unless later agreed.  
 * Documentation and knowledge transfer sufficient for developers to install, run, and extend DevKit.  
