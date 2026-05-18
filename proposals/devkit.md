@@ -125,6 +125,8 @@ The Web UI will provide a LocalNet dashboard showing named instances, service he
 
 Today developers upload DARs to each LocalNet participant manually (via `daml ledger upload-dar`, the JSON API, or the Canton Console), and there is no built-in way to inspect, diff, or hot-redeploy packages across a multi-participant LocalNet. DevKit closes that gap without replicating `dpm build` / `daml build` — it offers a `build-upload` convenience shortcut that delegates compilation to `dpm` and then uploads the resulting DAR to LocalNet participants in a single step.
 
+Initially, DevKit consumes package metadata via DevKit's own DAR parser to extract module, template, choice, field, interface, and dependency information. Once the Canton core team's enriched package metadata endpoints become available, DevKit will prefer the upstream endpoints over local DAR parser. 
+
 ###### New dpm Commands
 * `dpm localnet dar upload <path> [--participant <name> | --all-participants] [--vet] [--dry-run]` (or `canton-devkit localnet dar upload ...` standalone) — upload a DAR to one or all participants of the active (or `--name`-selected) LocalNet, optionally vetting for Smart Contract Upgrade (SCU).
 * `dpm localnet dar list [--participant <name>]` — list uploaded packages with package ID, name, version, Daml-LF version, module count, upload time, and vetting status.
