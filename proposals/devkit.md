@@ -86,7 +86,7 @@ Basic named-instance support belongs in the core orchestration model because Doc
 
 ###### Splice Version Compatibility
 
-`--version <version>` selects the Splice LocalNet version to run. DevKit documentation will include a compatibility matrix for supported Splice versions and platforms. The initial release will validate the initially supported version, while maintenance releases will cover smoke testing, compatibility updates, and patch releases for newer Splice releases.
+`--version <version>` in `localnet up` selects the Splice LocalNet version to run. DevKit documentation will include a compatibility matrix for supported Splice versions and platforms. The initial release will validate the initially supported version, while maintenance releases will cover smoke testing, compatibility updates, and patch releases for newer Splice releases.
 
 Compatibility with breaking Splice releases follows a best-effort model: the implementing team owns compatibility patches within a documented support window (or explicit cutoff) for each major Splice line, and will communicate timelines early when upstream breaking changes land so teams can plan upgrades. If ecosystem demand justifies it, stricter turnaround commitments (for example an SLA-style support tier) could be introduced by mutual agreement with the Committee without changing the default grant expectations.
 
