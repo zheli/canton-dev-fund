@@ -4,9 +4,12 @@
 
 | Field | Value |
 | :---- | :---- |
-| Author | Wayne Collier, Digital Asset, and Divam Narula, Obsidian Systems |
-| Status | Proposal |
+| Authors | Wayne Collier (DA) and Divam Narula (OS) |
+| Org | Digital Asset and Obsidian Systems
+| Status | Approved |
 | Created | 2026-02-25 |
+| Approved | 2026-04-01 |
+| PR | [#107](https://github.com/canton-foundation/canton-dev-fund/pull/107) | 
 | Implements | CIP-0104: Traffic-Based App Rewards |
 
 ---
@@ -173,14 +176,15 @@ Deliverables:
 - SV app UI: support for new configuration parameters.  
 - Wallet app: `RewardCouponV2` and `MintCoupon` lookup for reward minting.  
 - Dry-run mode deployed and validated on MainNet, confirming deterministic reward computation across SV nodes.  
-- Minimum two-week delay between deploying Dry-run mode on MainNet and enabling actual traffic-based rewards on DevNet. This means that explorers and app builders will be able to see what results would be generated via traffic-based application rewards, and compare them to existing marker-based rewards. Doing this two weeks before enforcing traffic-based app rewards on DevNet means that this computation will be available four weeks before the new rewards logic gets enforced on MainNet. 
+- Minimum four-week delay between the time that activity records are made public via the Scan app on MainNet, and the time that traffic-based app rewards start being enforced. This means that explorers and app builders will be able to see what results would be generated via traffic-based application rewards, and compare them to existing marker-based rewards, during this review period, before traffic-based app rewards go fully live.
+ 
 
 - Governance vote to switch from featured app markers to traffic-based app rewards.  
 - Monitoring: metrics and alerting for trigger health and hidden reward coupon counts.  
 - Resolution of any issues arising during MainNet deployment.  
 - All code merged into the open-source Canton and Splice repositories with appropriate unit and integration test coverage.  
 - Updated Splice documentation covering the traffic-based reward configuration, new Scan API endpoints, `RewardCouponV2` lifecycle, dry-run mode operation, and SV onboarding interaction with reward accounting.  
-- 
+- Featured app weights and mechanisms for adjusting those weights as proposed in [the corresponding CIP-0104 amendment](https://github.com/canton-foundation/cips/pull/238).
 
 **Acceptance Criteria:** Traffic-based app rewards are live on the Global Synchronizer MainNet, with `RewardCouponV2` contracts being created for featured app provider parties each round. Dry-run validation has confirmed deterministic reward computation across SV nodes prior to the live switch. Scale testing confirms the system operates within acceptable bounds at 2026 MainNet scale.
 
@@ -219,7 +223,7 @@ We propose an Early Completion Bonus if the work of Milestones 1-3 is completed 
 
 | Early Completion | Bonus Percentage | Bonus Amount (CC) |
 | :---- | :---- | :---- |
-| Milestones 1-3 available on MainNet four (4) months after grant approval | 15% of Milestones 1-3 | 525,000: Digital Asset<br>525,000: Obsidian Systems |
+| Milestones 1-3 available on MainNet five (5) months after grant approval | 15% of Milestones 1-3 | 525,000: Digital Asset<br>525,000: Obsidian Systems |
 
 ## Volatility Stipulation
 
