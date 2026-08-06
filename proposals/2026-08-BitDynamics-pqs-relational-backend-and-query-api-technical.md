@@ -351,59 +351,6 @@ the promotion set, and per-field collection-handling overrides. The query API ne
 configuration file. It takes its database connection, listen port, auth issuer, and admission limits
 as its own service configuration. It reads the projection contract from the database.
 
-#### 2.7 Where the work lands, and how it reaches upstream
-
-Two repositories, because the halves have different constraints:
-
-- **Relational backend - a public fork of `digital-asset/participant-query-store`.** PQS publishes
-  no consumable library artifacts. Its release outputs are an executable assembly JAR, a Docker
-  image, a DPM component, and a Helm chart. The only `pom` task in `apps/build.sc` feeds dependency
-  scanning. It does not publish. There is no `PublishModule` anywhere in the build. The `Datastore`
-  interface is therefore only implementable from inside the codebase. A fork is the only way to
-  build this. The fork is public and Apache-2.0 from the first commit.
-- **Query API - its own public repository.** No fork. No dependency on PQS internals.
-
-**Fork discipline.** The fork exists to be merged. Changes to shared files are additive and
-minimal. The only non-module change is a fork-local CI wrapper. That wrapper is not part of the
-upstream contribution. `postgres-document` and the existing test suite are untouched. The branch is
-rebased onto upstream `main` on a regular cadence. Upstream release-line changes are tracked. An
-operator can run the build of the fork against a current PQS at any point.
-
-**Upstreaming.** The Digital Asset CLA is signed as soon as there is a PR to sign it against. The
-fork carries Apache-2.0 headers and `make copyright-check` compliance from the first commit. Once
-the backend is complete, the modules are offered upstream. PRs are opened against
-`digital-asset/participant-query-store` and maintained through review. Whether they are merged is
-the maintainers' decision.
-
-The `cla.yaml` of the repository comment flow is the signing mechanism. Its `pull_request` path is
-currently inert. The `if` gate of the job tests for `pull_request_target`, an event it does not subscribe
-to. CLA status is confirmed by the maintainers, not by a passing check.
-
-**Maintainer availability.** Every commit to date is from Digital Asset engineers. The issue
-tracker is empty. There is no established external-contribution flow to rely on. The plan asks for
-maintainer time in bounded, scheduled reviews (an early design review and the upstream contribution).
-It does not ask for continuous review. No deliverable is blocked on a response between those points.
-
-**CODEOWNERS.** `**/build.sc`, `**/Makefile`, `.github/**`, and `apps/mill-build/**` are CODEOWNERS
-paths owned by `@digital-asset/sdk-tools-admin`. Un-stubbing the relational module must touch
-`apps/build.sc`. Packaging may touch the Makefiles. `apps/mill-build/**` changes only if a new
-dependency coordinate is required. The plan avoids that. `transcode-schema`, `transcode-daml-lf`,
-`flyway-core`, and `zio-jdbc` are already declared. Those files are the parts of the upstream
-contribution most likely to need iteration.
-
-**Upstream naming.** PR #3 (`Rename Scribe to PQS`, open since 2026-07-17) touches 197 files. That
-includes the `postgres-relational` stub itself, `apps/build.sc`, and the repeatable SQL migrations.
-It renames the writer-fencing GUC `scribe.instance` to `pqs.instance`. This document uses current
-names for precision. The fork takes the fencing GUC from `postgres.backend.instanceIdProp`. It does
-not hardcode it. When #3 merges, whichever phase is in flight budgets a one-time mechanical
-re-baselining: package and import rename across the new modules in the fork, plus conflict resolution in
-the files the fork also edits. Delivery is not gated on #3 merging.
-
-**Governance.** Grant #67 provides for transferring the repository to the `canton-foundation`
-namespace *if and when* the Daml SDK transitions. Its M1 acceptance criterion requires only that the
-repository be prepared for that move. The contribution follows the repository wherever it is
-governed.
-
 ### 3. Architectural Alignment
 
 - **canton-apis SIG.** Fills a gap in the Canton read-API surface: a first-party, attribute-queryable
