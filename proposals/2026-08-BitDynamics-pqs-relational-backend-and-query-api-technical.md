@@ -361,24 +361,7 @@ as its own service configuration. It reads the projection contract from the data
 - **Consistent with the Digital Asset design.** The `Datastore` abstraction, the reserved
   `postgres-relational` module, and the commented-out CLI wiring belong to Digital Asset. They do not belong to this
   proposal.
-- **CIP-0100 / CIP-0082.** Everything is Apache-2.0 and public from the first commit. The relational
-  backend lives in a public fork of PQS and is offered upstream when complete. The query API lives
-  in its own public repository.
-
-**Relationship to the approved PQS open-sourcing grant (PR
-[#67](https://github.com/canton-foundation/canton-dev-fund/pull/67)).** #67 M2 delivers
-zero-downtime DAR ingestion, orphaned-package decoding, and single-writer concurrency control. #67
-M3 delivers Smart Contract Upgrade and interface-lineage mapping, input-contract support, and
-validator Helm chart integration. **No part of that work is re-done here.** This design consumes it.
-Package-name keying and representative-package resolution already ship at `8c4749f`
-(`V010__Add_package_name_support.sql`. `coalesce(creation_package_id, package_id)` in
-`__contracts()`). The relational backend consumes them as they stand. It reuses the existing
-`registerActiveWriterAndCleanupTransactions` hook. It does not add a second concurrency-control
-mechanism. the single-writer work from #67 M2 applies unchanged. Schema generation works with dynamic DAR ingestion from #67 M2. It does not require it. Without it, relational DDL generation follows the
-same restart-on-new-DAR behavior PQS has today. #67 M3 shows that upgrades and acquired interfaces
-are resolved correctly in the document store. This work checks that the relational *projection*
-stays correct under that resolution. Different artifacts under test. If #67 M3 slips, upgrade-line
-verification slips with it. Earlier phases do not depend on it.
+- **CIP-0100 / CIP-0082.** Everything is Apache-2.0 and public. 
 
 ### 4. Backward Compatibility
 
@@ -395,54 +378,3 @@ No backward compatibility impact for existing deployments.
 - One deliberate divergence: archive-history visibility is captured at ingestion. It is not
   inherited from create-time witnesses. Relational archive history can be narrower than a naive join
   over document-store columns would produce. This is documented and tested (§2.5).
-
----
-
-## Rationale
-
-**Why extend PQS.** The default approach is to extend what exists. Here the component exists. It is
-adopted. It is Apache-2.0. It already contains a named, reserved, unimplemented extension point for
-this. Building the same capability elsewhere would mean re-implementing offset tracking,
-reconnection, backpressure, crash recovery, single-writer concurrency control, Daml-LF decoding,
-package resolution, pruning, redaction, and schema migration. `scribe` already does all of that.
-
-Alternatives considered:
-
-- **Views over the existing JSONB tables.** The cheapest option. Useful for some access patterns. A
-  view over JSONB does not give the planner typed columns, native btree indexes, or column
-  statistics. Selectivity estimates on `payload->>'field'` are poor. Every row must be deserialized
-  to be filtered. Expression indexes must be created and maintained by hand per query shape. That
-  last point disqualifies an API whose safety model depends on knowing in advance which query shapes
-  are indexed.
-- **A separate indexing service reading from PQS.** Workable. Teams do this today. It costs a second
-  datastore, a second copy of the data, a second trust boundary, and a second set of pruning and
-  redaction rules to keep in sync. It also turns a streamed pipeline into a polled one.
-- **Exposing PostgREST or a GraphQL gateway directly over the tables.** Worth offering later as a
-  power-user path. Not suitable as the primary surface. It couples clients to physical table layout.
-  It pushes authorization down to database roles rather than party-scoped predicates. It has no
-  notion of ledger offsets or temporal perspectives. Adopting the PostgREST filter syntax while owning
-  the serving layer keeps the ergonomics without the coupling.
-- **A new query language.** Rejected. A custom grammar is a permanent maintenance and documentation
-  burden. Unbounded expressiveness conflicts with the admission control in §2.4.
-
-**Why a fork.** PQS publishes no consumable library artifacts. The `Datastore` interface is only
-implementable from inside the codebase. Making the fork public, additive, and continuously rebased
-keeps the eventual merge cheap. Operators can run the work throughout development. Delivery is not
-tied to the review calendar of another organization. The upstream outcome is still available. The query
-API needs no fork. It is kept out of the fork entirely.
-
-**Why the API is designed with the backend.** The admission control in §2.4 works only because the
-projection contract declares the indexed query shapes. The two are designed against each other. They
-ship as separate artifacts. They are delivered in sequence.
-
----
-
-### Notes for reviewers
-
-Every claim about the current PQS codebase is against commit `8c4749f` (2026-07-29). Extension
-points (§2.1) are checkable in `Datastore.scala`, `apps/build.sc`, and the two `Main.scala` files.
-Column and index claims (§2.2) are in the versioned migrations under
-`apps/postgres/document/resources/db/migration/`. Read-function semantics (§2.3, §2.5) are in
-`R__functions.sql` in that same directory. Since `V036__Extract_functions_to_repeatable.sql`, that
-file is the sole source of truth for function definitions. The `V0xx` copies are superseded. Their
-signatures no longer reflect current behavior.
